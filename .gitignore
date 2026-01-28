@@ -1,0 +1,7 @@
+.pytest_cache
+src/uilib.egg-info
+src/uilib/static/image/icon/*.psd
+build
+
+NOTE.txt
+example.py
