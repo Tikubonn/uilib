@@ -1,6 +1,9 @@
 
 import uilib
+import logging
 import tkinter
+
+logging.basicConfig(level=logging.DEBUG)
 
 tk = tkinter.Tk()
 tk.title("Sample window")

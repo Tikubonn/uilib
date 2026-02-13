@@ -14,7 +14,7 @@ _PIL_IMAGES:"dict[str, PIL.Image]" = {
   "icon-search": Image.open(_uilib_dir.joinpath("static/image/icon/search.png")),
 }
 
-def get_image (id_:str, expect_size:tuple[int, int]) -> "tkinter.PhotoImage":
+def get_image (id_:str, expect_size:tuple[int, int]|None=None) -> "tkinter.PhotoImage":
 
   """指定された画像を tkinter.PhotoImage 形式で取得します。
 
@@ -33,6 +33,7 @@ def get_image (id_:str, expect_size:tuple[int, int]) -> "tkinter.PhotoImage":
   """
 
   image = _PIL_IMAGES[id_]
-  image.copy()
-  image.thumbnail(expect_size)
-  return ImageTk.PhotoImage(image=image)
+  copied_image = image.copy()
+  if expect_size:
+    image.thumbnail(expect_size)
+  return ImageTk.PhotoImage(image=copied_image)
