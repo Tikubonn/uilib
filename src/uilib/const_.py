@@ -1,4 +1,6 @@
 
+"""uilib で使用される定数が定義されています。"""
+
 PADDING:int = 2
 PADDING_L:int = 6
 INNER_PADDING:int = 4

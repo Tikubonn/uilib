@@ -3,6 +3,8 @@ from uilib.ui.abc import IUI
 
 class UI_UserDef (IUI):
 
+  """uilib.ui.abc.IUI を継承したクラスを定義することなく UI を作成するためのオブジェクトです。"""
+
   def __init__ (
     self, 
     *,

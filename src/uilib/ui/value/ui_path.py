@@ -7,6 +7,8 @@ from uilib.ui.abc import IUI
 
 class UI_Path (IUI):
 
+  """ファイルパスを表現する uilib.ui.abc.IUI オブジェクトです。"""
+
   def __init__ (self, value:str, ask_func:"typing.Callable[[], str]"=tkinter.filedialog.askopenfilename):
     self.str_var = tkinter.StringVar(value=value)
     self.ask_func = ask_func

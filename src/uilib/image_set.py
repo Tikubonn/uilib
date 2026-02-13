@@ -2,6 +2,8 @@
 import importlib.resources
 from PIL import Image, ImageTk
 
+"""uilib で使用される画像データの管理を行うモジュールです。"""
+
 _uilib_dir:"pathlib.Path" = importlib.resources.files("uilib")
 _PIL_IMAGES:"dict[str, PIL.Image]" = {
   "icon-add": Image.open(_uilib_dir.joinpath("static/image/icon/add.png")),
@@ -13,6 +15,23 @@ _PIL_IMAGES:"dict[str, PIL.Image]" = {
 }
 
 def get_image (id_:str, expect_size:tuple[int, int]) -> "tkinter.PhotoImage":
+
+  """指定された画像を tkinter.PhotoImage 形式で取得します。
+
+  Parameters
+  ----------
+  id_ : str
+    取得する画像の ID 名です。
+  expect_size : tuple[int, int]
+    取得する画像の望ましいサイズです。
+    画像サイズが本サイズを超過する場合には自動的にリサイズを行います。
+
+  Returns
+  -------
+  tkinter.PhotoImage
+    適切にリサイズされた tkinter.PhotoImage 形式の画像オブジェクトです。
+  """
+
   image = _PIL_IMAGES[id_]
   image.copy()
   image.thumbnail(expect_size)

@@ -5,6 +5,8 @@ from uilib.ui.abc import IUI
 
 class UI_Text (IUI):
 
+  """複数行にわたるテキストラベルを実現する uilib.ui.abc.IUI オブジェクトです。"""
+
   def __init__ (self, text:str):
     self.text = text
     self.base_frame = None

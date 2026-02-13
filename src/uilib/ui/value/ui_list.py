@@ -35,6 +35,8 @@ class _HandlerSet:
 
 class UI_List (IUI):
 
+  """任意長のリストを表現する uilib.ui.abc.IUI オブジェクトです。"""
+
   def __init__ (self, uis:"list[uilib.ui.abc.IUI]", add_func:"typing.Callable[[], uilib.ui.abc.IUI]"):
     self.uis = uis
     self.add_func = add_func

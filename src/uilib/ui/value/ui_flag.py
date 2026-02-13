@@ -10,6 +10,8 @@ from collections import OrderedDict
 
 class UI_Flag (IUI):
 
+  """列挙型(enum.Flag)を表現する uilib.ui.abc.IUI オブジェクトです。"""
+
   def __init__ (self, value:"enum.Flag", type_:"typing.Type[enum.Flag]", label_table:"dict[enum.Flag, str]"={}):
     self.type_ = type_
     self.label_table = label_table

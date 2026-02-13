@@ -5,6 +5,8 @@ from uilib.ui.abc import IUI
 
 class UI_Button (IUI):
 
+  """任意のボタンを表現する uilib.ui.abc.IUI オブジェクトです。"""
+
   def __init__ (self, label:str, press_handler:"typing.Callable[[], None]"):
     self.label = label
     self.press_handler = press_handler

@@ -38,6 +38,8 @@ class _ScrollableListbox (tkinter.Frame):
 
 class UI_Dict (IUI):
 
+  """文字列をキーとする辞書を表現する uilib.ui.abc.IUI オブジェクトです。"""
+
   def __init__ (self, uis:"dict[str, uilib.ui.abc.IUI]", add_func:"typing.Callable[[], uilib.ui.abc.IUI]"):
     self.uis = OrderedDict(uis)
     self.add_func = add_func

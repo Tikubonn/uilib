@@ -36,6 +36,8 @@ class _CellInfo (NamedTuple):
 
 class UI_Layout (IUI):
 
+  """レイアウトを実現する uilib.ui.abc.IUI オブジェクトです。"""
+
   def __init__ (self, uis:"list[list[uilib.ui.abc.IUI|tuple[uilib.ui.abc.IUI, int]|tuple[uilib.ui.abc.IUI, int, int]|tuple[uilib.ui.abc.IUI, int, int, uilib.enum_.Direction]|None]]", value_uis:"dict[str, uilib.ui.abc.IUI]|uilib.ui.abc.IUI"):
     self.uis = uis
     self.value_uis = value_uis

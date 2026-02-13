@@ -6,6 +6,8 @@ from .ui_layout import UI_Layout
 
 class UI_Group (IUI):
 
+  """名前付きレイアウトを実現する uilib.ui.abc.IUI オブジェクトです。"""
+
   def __init__ (self, name:str, uis:"list[list[uilib.ui.abc.IUI|tuple[uilib.ui.abc.IUI, int]|tuple[uilib.ui.abc.IUI, int, int]|tuple[uilib.ui.abc.IUI, int, int, uilib.enum_.Direction]|None]]", value_uis:"dict[str, uilib.ui.abc.IUI]|uilib.ui.abc.IUI"):
     self.name = name
     self.ui_layout = UI_Layout(uis, value_uis)

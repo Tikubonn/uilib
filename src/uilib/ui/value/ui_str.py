@@ -5,6 +5,8 @@ from uilib.ui.abc import IUI
 
 class UI_Str (IUI):
 
+  """任意の文字列を表現する uilib.ui.abc.IUI オブジェクトです。"""
+
   def __init__ (self, value:str):
     self.str_var = tkinter.StringVar(value=value)
 

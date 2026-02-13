@@ -4,6 +4,8 @@ from uilib.ui.abc import IUI
 
 class UI_Bool (IUI):
 
+  """真偽値を表現する uilib.ui.abc.IUI オブジェクトです。"""
+
   def __init__ (self, value:bool):
     self.int_var = tkinter.IntVar(value=value)
 

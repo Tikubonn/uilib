@@ -7,6 +7,8 @@ from uilib.ui.abc import IUI
 
 class UI_Enum (IUI):
 
+  """列挙型を表現する uilib.ui.abc.IUI オブジェクトです。"""
+
   def __init__ (self, value:"enum.Enum", type_:"typing.Type[enum.Enum]", label_table:"dict[enum.Enum, str]"={}):
     self.type_ = type_
     self.label_table = label_table

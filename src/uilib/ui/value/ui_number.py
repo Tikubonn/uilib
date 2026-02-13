@@ -28,6 +28,8 @@ class _UI_Number (IUI):
 
 class UI_Int (IUI):
 
+  """整数を表現する uilib.ui.abc.IUI オブジェクトです。"""
+
   def __init__ (self, value:int, value_range_step:tuple[int, int, int]|None=None):
     var = tkinter.IntVar(value=value)
     self.ui_number = _UI_Number(var, value_range_step)
@@ -45,6 +47,8 @@ class UI_Int (IUI):
       raise ValueError(param) #tmp.
 
 class UI_Float (IUI):
+
+  """浮動小数点数を表現する uilib.ui.abc.IUI オブジェクトです。"""
 
   def __init__ (self, value:float, value_range_step:tuple[float, float, float]|None=None):
     var = tkinter.DoubleVar(value=value)

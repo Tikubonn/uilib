@@ -4,6 +4,8 @@ from uilib.ui.abc import IUI
 
 class UI_Toggle (IUI):
 
+  """トグルボックスを実現する uilib.ui.abc.IUI オブジェクトです。"""
+
   def __init__ (self, ui:"uilib.ui.abc.IUI"):
     self.ui = ui
     self.int_var = tkinter.IntVar(value=1)
