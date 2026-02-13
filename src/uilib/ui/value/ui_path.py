@@ -35,3 +35,6 @@ class UI_Path (IUI):
       self.str_var.set(param)
     else:
       raise ValueError(param) #tmp.
+  
+  def save_as_param (self) -> str:
+    return self.str_var.get()

@@ -26,6 +26,9 @@ class _UI_Number (IUI):
   def load_from_param (self, param:"typing.Any"):
     self.var.set(param)
 
+  def save_as_param (self) -> "typing.Any":
+    return self.var.get()
+
 class UI_Int (IUI):
 
   """整数を表現する uilib.ui.abc.IUI オブジェクトです。"""
@@ -46,6 +49,9 @@ class UI_Int (IUI):
     else:
       raise ValueError(param) #tmp.
 
+  def save_as_param (self) -> int:
+    return self.ui_number.save_as_param()
+
 class UI_Float (IUI):
 
   """浮動小数点数を表現する uilib.ui.abc.IUI オブジェクトです。"""
@@ -65,3 +71,6 @@ class UI_Float (IUI):
       self.ui_number.load_from_param(param)
     else:
       raise ValueError(param) #tmp.
+
+  def save_as_param (self) -> float:
+    return self.ui_number.save_as_param()

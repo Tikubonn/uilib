@@ -29,15 +29,15 @@ class UI_Flag (IUI):
       checkbutton.pack(fill=tkinter.X, padx=const_.PADDING, pady=const_.PADDING)
     return base_frame
 
-  def load_from_param (self, param:"enum.Flag|int|str"):
-    if isinstance(param, Flag):
-      for f, var in self.int_var_table.items():
-        var.set((f in param))
-    elif isinstance(param, int):
-      f = self.type_(param)
-      self.load_from_param(f)
-    elif isinstance(param, str):
-      f = self.type_[param]
-      self.load_from_param(f)
+  def load_from_param (self, param:list[str]):
+    if isinstance(param, list):
+      for var in self.int_var_table.values():
+        var.set(0)
+      for p in param:
+        e = self.type_[p]
+        self.int_var_table[e].set(1)
     else:
       raise ValueError(param) #tmp.
+  
+  def save_as_param (self) -> list[str]:
+    return [f.name for f, var in self.int_var_table.items() if var.get()]

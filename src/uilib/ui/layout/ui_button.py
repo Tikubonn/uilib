@@ -20,5 +20,8 @@ class UI_Button (IUI):
     button.pack(fill=tkinter.X, ipadx=const_.INNER_PADDING)
     return base_frame
 
-  def load_from_param (self, param:"typing.Any"):
+  def load_from_param (self, param:None):
     pass
+
+  def save_as_param (self) -> None:
+    return None

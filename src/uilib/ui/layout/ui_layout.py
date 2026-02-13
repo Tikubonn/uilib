@@ -79,7 +79,7 @@ class UI_Layout (IUI):
               sticky = tkinter.E
             case enum_.Direction.W:
               sticky = tkinter.W
-            case enum_.Direction.E | enum_.W:
+            case enum_.Direction.E | enum_.Direction.W:
               sticky = tkinter.EW
             case _:
               sticky = tkinter.W
@@ -97,17 +97,25 @@ class UI_Layout (IUI):
       row += min((cell_info.row_span for cell_info in inner_cell_infos), default=0)
     return base_frame
 
-  def load_from_param (self, param:"dict[str, typing.Any]|typing.Any"):
-    if isinstance(self.value_uis, dict):
-      if isinstance(param, dict):
-        for key, inner_param in param.items():
-          if key in self.value_uis:
-            self.value_uis[key].load_from_param(inner_param)
-          else:
-            raise KeyError(param) #tmp.
-      else:
-        raise ValueError(param) #tmp.
-    elif isinstance(self.value_uis, IUI):
-      self.value_uis.load_from_param(param)
+  def load_from_param (self, param:"list[typing.Any]"):
+    if isinstance(param, list):
+      uis = []
+      for uis_line in self.uis:
+        for uis_cell in uis_line:
+          cell_info = _CellInfo.from_param(uis_cell)
+          if cell_info.ui:
+            uis.append(cell_info.ui)
+      for ui, inner_param in zip(uis, param):
+        ui.load_from_param(inner_param)
     else:
       raise ValueError(param) #tmp.
+
+  def save_as_param (self) -> "list[typing.Any]":
+    param = []
+    for uis_line in self.uis:
+      for uis_cell in uis_line:
+        cell_info = _CellInfo.from_param(uis_cell)
+        if cell_info.ui:
+          pm = cell_info.ui.save_as_param()
+          param.append(pm)
+    return param

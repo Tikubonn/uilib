@@ -30,3 +30,6 @@ class UI_Text (IUI):
 
   def load_from_param (self, params:None):
     pass
+
+  def save_as_param (self) -> None:
+    return None

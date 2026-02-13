@@ -39,3 +39,6 @@ class UI_Toggle (IUI):
 
   def load_from_param (self, param:"typing.Any"):
     self.ui.load_from_param(param)
+
+  def save_as_param (self) -> "typing.Any":
+    return self.ui.save_as_param()

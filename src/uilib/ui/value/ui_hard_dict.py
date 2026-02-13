@@ -52,13 +52,13 @@ class UI_HardDict (IUI):
     self.content_frame = content_frame
     return base_frame
 
-  def load_from_param (self, param:"dict[str, uilib.ui.abc.IUI]"):
+  def load_from_param (self, param:"dict[str, typing.Any]"):
     if isinstance(param, dict):
       for key, inner_param in param.items():
-        if key in self.uis:
-          self.uis[key].load_from_param(inner_param)
-        else:
-          raise KeyError(key) #tmp.
+        self.uis[key].load_from_param(inner_param)
       self._rebuild()
     else:
       raise ValueError(param) #tmp.
+
+  def save_as_param (self) -> "dict[str, typing.Any]":
+    return OrderedDict(((key, ui.save_as_param()) for key, ui in self.uis.items()))

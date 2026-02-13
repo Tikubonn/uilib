@@ -176,3 +176,6 @@ class UI_Dict (IUI):
       self._update_content_frame()
     else:
       raise ValueError(param) #tmp.
+  
+  def save_as_param (self) -> "dict[str, typing.Any]":
+    return {key: ui.save_as_param() for key, ui in self.uis.items()}

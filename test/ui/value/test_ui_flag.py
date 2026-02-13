@@ -5,13 +5,6 @@ import pytest
 import tkinter
 from enum import Flag, auto, unique
 
-@pytest.fixture
-def tk () -> tkinter.Tk:
-  tk = tkinter.Tk()
-  yield tk
-  tk.destroy()
-  time.sleep(1)
-
 @unique
 class SampleFlag (Flag):
 
@@ -19,12 +12,14 @@ class SampleFlag (Flag):
   B = auto()
   C = auto()
 
-def test_ui_flag (tk):
+def test_ui_flag (test_tk):
   ui_flag = uilib.ui.value.UI_Flag(SampleFlag.A, SampleFlag)
-  built = ui_flag.build(tk)
+  built = ui_flag.build(test_tk)
   built.pack(fill=tkinter.X)
   assert ui_flag.get_value() is SampleFlag.A
-  ui_flag.load_from_param(SampleFlag.A|SampleFlag.B)
+  assert ui_flag.save_as_param() == [SampleFlag.A.name]
+  ui_flag.load_from_param([SampleFlag.A.name, SampleFlag.B.name])
   assert ui_flag.get_value() is SampleFlag.A|SampleFlag.B
+  assert ui_flag.save_as_param() == [SampleFlag.A.name, SampleFlag.B.name]
   with pytest.raises(ValueError):
     ui_flag.load_from_param(None)

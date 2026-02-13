@@ -4,14 +4,7 @@ import uilib
 import pytest
 import tkinter
 
-@pytest.fixture
-def tk () -> tkinter.Tk:
-  tk = tkinter.Tk()
-  yield tk
-  tk.destroy()
-  time.sleep(1)
-
-def test_ui_layout (tk):
+def test_ui_layout (test_tk):
   ints = [uilib.ui.value.UI_Int(i) for i in range(10)]
   ui_layout = uilib.ui.layout.UI_Layout(
     [
@@ -33,24 +26,26 @@ def test_ui_layout (tk):
       "int3": ints[3]
     }
   )
-  built = ui_layout.build(tk)
+  built = ui_layout.build(test_tk)
   built.pack()
   assert ui_layout.get_value() == {"int0": 0, "int1": 1, "int2": 2, "int3": 3}
-  ui_layout.load_from_param({"int0": 4, "int1": 5, "int2": 6, "int3": 7})
+  assert ui_layout.save_as_param() == [0, 1, 2, 3]
+  ui_layout.load_from_param([4, 5, 6, 7])
   assert ui_layout.get_value() == {"int0": 4, "int1": 5, "int2": 6, "int3": 7}
+  assert ui_layout.save_as_param() == [4, 5, 6, 7]
   with pytest.raises(ValueError):
     ui_layout.load_from_param(None)
-  with pytest.raises(KeyError):
-    ui_layout.load_from_param({"int0": 4, "int1": 5, "int2": 6, "int3": 7, "intX": -1})
 
-def test_ui_layout_single_value (tk):
+def test_ui_layout_single_value (test_tk):
   ui_int = uilib.ui.value.UI_Int(123)
   ui_layout = uilib.ui.layout.UI_Layout(
     [[ui_int]],
     ui_int
   )
-  built = ui_layout.build(tk)
+  built = ui_layout.build(test_tk)
   built.pack()
   assert ui_layout.get_value() == 123
-  ui_layout.load_from_param(456)
+  assert ui_layout.save_as_param() == [123]
+  ui_layout.load_from_param([456])
   assert ui_layout.get_value() == 456
+  assert ui_layout.save_as_param() == [456]

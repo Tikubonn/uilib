@@ -1,32 +1,45 @@
 
 from abc import ABC, abstractmethod
 
-class ILoadable (ABC):
+class ISerializable (ABC):
 
-  """任意のパラメータから状態を復元する機能を規定します。"""
+  """状態を復元・保存する機能を規定します。"""
 
   @abstractmethod
   def load_from_param (self, param:"typing.Any"):
 
-    """任意のパラメータを基にオブジェクトの状態を復元します。
+    """指定されたパラメータからオブジェクトの状態を復元します。
 
     Parameters
     ----------
     param : typing.Any
-      復元に用いられるパラメータです。
+      オブジェクトの状態を復元するために使用されるパラメータです。
     """
 
     pass
 
-class IUI (ILoadable):
+  @abstractmethod
+  def save_as_param (self) -> "typing.Any":
+
+    """オブジェクトの状態を復元するために使用できるパラメータを作成します。
+
+    Returns
+    -------
+    typing.Any
+      オブジェクトの状態を復元するために使用することができるパラメータです。
+    """
+
+    pass
+
+class IUI (ISerializable):
 
   """UI の作成・管理を行う機能を規定します。
-  
-  規定される機能の一覧は次のとおりです。
-  
+
+  規定される機能のリストは次のとおりです。
+
   * tkinter ウィジットの作成
-  * UI 設定値の管理
-  * uilib.ui.abc.ILoadable に規定された方法による UI の状態復元
+  * UI 設定値の取得
+  * uilib.ui.abc.ISerializable によって規定された方法による状態の復元・保存
   """
 
   @abstractmethod

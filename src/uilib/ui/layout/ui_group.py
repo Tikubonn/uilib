@@ -22,5 +22,8 @@ class UI_Group (IUI):
     built.pack(fill=tkinter.X, padx=const_.INNER_PADDING, pady=const_.INNER_PADDING)
     return base_frame
 
-  def load_from_param (self, param:"dict[str, typing.Any]|typing.Any"):
+  def load_from_param (self, param:"list[typing.Any]"):
     self.ui_layout.load_from_param(param)
+
+  def save_as_param (self) -> "list[typing.Any]":
+    return self.ui_layout.save_as_param()

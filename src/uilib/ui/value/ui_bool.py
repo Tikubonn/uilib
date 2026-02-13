@@ -21,3 +21,6 @@ class UI_Bool (IUI):
       self.int_var.set(param)
     else:
       raise ValueError(param) #tmp.
+  
+  def save_as_param (self) -> bool:
+    return bool(self.int_var.get())

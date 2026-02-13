@@ -28,15 +28,14 @@ class UI_Enum (IUI):
       radiobutton.grid(column=0, row=i, sticky=tkinter.W, padx=const_.PADDING, pady=const_.PADDING)
     return base_frame
 
-  def load_from_param (self, param:"enum.Enum|int|str"):
-    if isinstance(param, Enum):
-      index = self.enum_items.index(param)
+  def load_from_param (self, param:str):
+    if isinstance(param, str):
+      e = self.type_[param]
+      index = self.enum_items.index(e)
       self.int_var.set(index)
-    elif isinstance(param, int):
-      e = self.enum_items[param]
-      self.load_from_param(e)
-    elif isinstance(param, str):
-      e = self.type_(param)
-      self.load_from_param(e)
     else:
       raise ValueError(param) #tmp.
+
+  def save_as_param (self) -> str:
+    e = self.get_value()
+    return e.name

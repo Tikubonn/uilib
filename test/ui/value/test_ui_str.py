@@ -4,19 +4,14 @@ import uilib
 import pytest
 import tkinter
 
-@pytest.fixture
-def tk () -> tkinter.Tk:
-  tk = tkinter.Tk()
-  yield tk
-  tk.destroy()
-  time.sleep(1)
-
-def test_ui_str (tk):
+def test_ui_str (test_tk):
   ui_str = uilib.ui.value.UI_Str("abc")
-  built = ui_str.build(tk)
+  built = ui_str.build(test_tk)
   built.pack(fill=tkinter.X)
   assert ui_str.get_value() == "abc"
+  assert ui_str.save_as_param() == "abc"
   ui_str.load_from_param("def")
   assert ui_str.get_value() == "def"
+  assert ui_str.save_as_param() == "def"
   with pytest.raises(ValueError):
     ui_str.load_from_param(None)
