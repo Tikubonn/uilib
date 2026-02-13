@@ -2,10 +2,13 @@
 import uilib
 import tkinter
 
+def callback (value:str):
+  print("Changed to", value)
+
 tk = tkinter.Tk()
 tk.title("Sample window")
 tk.minsize(320, 240)
-ui = uilib.ui.value.UI_Path("")
+ui = uilib.ui.value.UI_Path("", callback=callback)
 ui.build(tk).pack(padx=10, pady=10)
 button = tkinter.Button(tk, text="Print", command=lambda: print(repr(ui.get_value())))
 button.pack(padx=10, pady=(0, 10))

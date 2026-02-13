@@ -5,22 +5,43 @@ from uilib.ui.abc import IUI
 
 class _UI_Number (IUI):
 
-  def __init__ (self, var:"tkinter.Variable", value_range_step:"tuple[typing.Any, typing.Any, typing.Any]|None"=None):
+  def __init__ (
+    self, 
+    var:"tkinter.Variable", 
+    value_range_step:"tuple[typing.Any, typing.Any, typing.Any]|None"=None,
+    callback:"typing.Callable[[typing.Any], None]|None"=None):
     self.var = var
     self.value_range_step = value_range_step
+    self.callback = callback
 
   def get_value (self) -> "typing.Any":
     return self.var.get()
+
+  def _on_change (self, event:tkinter.Event|None=None):
+    if self.callback:
+      self.callback(self.get_value())
 
   def build (self, master:"tkinter.Widget") -> "tkinter.Widget":
     base_frame = tkinter.Frame(master)
     if self.value_range_step:
       min_, max_, step = self.value_range_step
-      spinbox = tkinter.Spinbox(base_frame, from_=min_, to=max_, increment=step, textvariable=self.var, width=const_.NUMERIC_FORM_WIDTH)
+      spinbox = tkinter.Spinbox(
+        base_frame, 
+        from_=min_, 
+        to=max_, 
+        increment=step, 
+        textvariable=self.var, 
+        width=const_.NUMERIC_FORM_WIDTH,
+        command=self._on_change
+      )
       spinbox.pack(fill=tkinter.X, ipady=const_.INNER_PADDING)
+      spinbox.bind("<FocusOut>", self._on_change)
+      spinbox.bind("<Return>", self._on_change)
     else:
       entry = tkinter.Entry(base_frame, textvariable=self.var, width=const_.NUMERIC_FORM_WIDTH)
       entry.pack(fill=tkinter.X, ipady=const_.INNER_PADDING)
+      entry.bind("<FocusOut>", self._on_change)
+      entry.bind("<Return>", self._on_change)
     return base_frame
 
   def load_from_param (self, param:"typing.Any"):
@@ -33,9 +54,13 @@ class UI_Int (IUI):
 
   """整数を表現する uilib.ui.abc.IUI オブジェクトです。"""
 
-  def __init__ (self, value:int, value_range_step:tuple[int, int, int]|None=None):
+  def __init__ (
+    self, 
+    value:int, 
+    value_range_step:tuple[int, int, int]|None=None,
+    callback:"typing.Callable[[int], None]|None"=None):
     var = tkinter.IntVar(value=value)
-    self.ui_number = _UI_Number(var, value_range_step)
+    self.ui_number = _UI_Number(var, value_range_step, callback)
 
   def get_value (self) -> int:
     return self.ui_number.get_value()
@@ -56,9 +81,13 @@ class UI_Float (IUI):
 
   """浮動小数点数を表現する uilib.ui.abc.IUI オブジェクトです。"""
 
-  def __init__ (self, value:float, value_range_step:tuple[float, float, float]|None=None):
+  def __init__ (
+    self, 
+    value:float, 
+    value_range_step:tuple[float, float, float]|None=None,
+    callback:"typing.Callable[[float], None]|None"=None):
     var = tkinter.DoubleVar(value=value)
-    self.ui_number = _UI_Number(var, value_range_step)
+    self.ui_number = _UI_Number(var, value_range_step, callback)
 
   def get_value (self) -> float:
     return self.ui_number.get_value()

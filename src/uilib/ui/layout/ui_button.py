@@ -7,16 +7,16 @@ class UI_Button (IUI):
 
   """任意のボタンを表現する uilib.ui.abc.IUI オブジェクトです。"""
 
-  def __init__ (self, label:str, press_handler:"typing.Callable[[], None]"):
+  def __init__ (self, label:str, callback:"typing.Callable[[], None]"):
     self.label = label
-    self.press_handler = press_handler
+    self.callback = callback
 
   def get_value (self) -> None:
     return None
 
   def build (self, master:"tkinter.Widget") -> "tkinter.Widget":
     base_frame = tkinter.Frame(master)
-    button = tkinter.Button(base_frame, text=self.label, command=self.press_handler)
+    button = tkinter.Button(base_frame, text=self.label, command=self.callback)
     button.pack(fill=tkinter.X, ipadx=const_.INNER_PADDING)
     return base_frame
 

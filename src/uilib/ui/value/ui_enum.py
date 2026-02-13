@@ -9,9 +9,15 @@ class UI_Enum (IUI):
 
   """列挙型を表現する uilib.ui.abc.IUI オブジェクトです。"""
 
-  def __init__ (self, value:"enum.Enum", type_:"typing.Type[enum.Enum]", label_table:"dict[enum.Enum, str]"={}):
+  def __init__ (
+    self, 
+    value:"enum.Enum", 
+    type_:"typing.Type[enum.Enum]", 
+    label_table:"dict[enum.Enum, str]"={},
+    callback:"typing.Callable[[enum.Enum], None]|None"=None):
     self.type_ = type_
     self.label_table = label_table
+    self.callback = callback
     enum_items = tuple(type_)
     self.enum_items = enum_items
     self.int_var = tkinter.IntVar(value=enum_items.index(value))
@@ -20,11 +26,21 @@ class UI_Enum (IUI):
     index = self.int_var.get()
     return self.enum_items[index]
 
+  def _on_change (self):
+    if self.callback:
+      self.callback(self.get_value())
+
   def build (self, master:"tkinter.Widget") -> "tkinter.Widget":
     base_frame = tkinter.Frame(master, bd=2, relief=tkinter.GROOVE)
     for i, e in enumerate(self.enum_items):
       radiobutton_text = self.label_table.get(e, e.name)
-      radiobutton = tkinter.Radiobutton(base_frame, text=radiobutton_text, variable=self.int_var, value=i)
+      radiobutton = tkinter.Radiobutton(
+        base_frame, 
+        text=radiobutton_text, 
+        variable=self.int_var, 
+        value=i, 
+        command=self._on_change
+      )
       radiobutton.grid(column=0, row=i, sticky=tkinter.W, padx=const_.PADDING, pady=const_.PADDING)
     return base_frame
 

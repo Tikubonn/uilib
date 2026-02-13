@@ -9,9 +9,15 @@ class UI_Path (IUI):
 
   """ファイルパスを表現する uilib.ui.abc.IUI オブジェクトです。"""
 
-  def __init__ (self, value:str, ask_func:"typing.Callable[[], str]"=tkinter.filedialog.askopenfilename):
+  def __init__ (
+    self, 
+    value:str, 
+    ask_func:"typing.Callable[[], str]"=tkinter.filedialog.askopenfilename,
+    callback:"typing.Callable[[str], None]|None"=None):
     self.str_var = tkinter.StringVar(value=value)
     self.ask_func = ask_func
+    self.callback = callback
+    self.icon_search = None
 
   def get_value (self) -> str:
     return self.str_var.get()
@@ -20,13 +26,22 @@ class UI_Path (IUI):
     path = self.ask_func()
     if path:
       self.str_var.set(path)
+      if self.callback:
+        self.callback(self.get_value())
 
   def build (self, master:"tkinter.Widget") -> "tkinter.Widget":
+
+    #Load icon images.
+
+    self.icon_search = image_set.get_image("icon-search", (16, 16))
+
+    #Build.
+
     base_frame = tkinter.Frame(master)
     base_frame.columnconfigure(0, weight=1)
-    entry = tkinter.Entry(base_frame, textvariable=self.str_var, state="readonly", width=const_.TEXT_FORM_WIDTH)
+    entry = tkinter.Entry(base_frame, textvariable=self.str_var, state=tkinter.DISABLED, width=const_.TEXT_FORM_WIDTH)
     entry.grid(column=0, row=0, sticky=tkinter.EW, padx=(0, const_.PADDING), ipady=const_.INNER_PADDING)
-    button = tkinter.Button(base_frame, image=image_set.get_image("icon-search", (16, 16)), command=self._on_pressed)
+    button = tkinter.Button(base_frame, image=self.icon_search, command=self._on_pressed)
     button.grid(column=1, row=0, sticky=tkinter.NS, padx=(const_.PADDING, 0), ipadx=const_.INNER_PADDING)
     return base_frame
 

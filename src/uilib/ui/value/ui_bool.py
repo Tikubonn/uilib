@@ -6,14 +6,19 @@ class UI_Bool (IUI):
 
   """真偽値を表現する uilib.ui.abc.IUI オブジェクトです。"""
 
-  def __init__ (self, value:bool):
+  def __init__ (self, value:bool, callback:"typing.Callable[[bool], None]|None"=None):
     self.int_var = tkinter.IntVar(value=value)
+    self.callback = callback
 
   def get_value (self) -> bool:
     return bool(self.int_var.get())
 
+  def _on_change (self):
+    if self.callback:
+      self.callback(self.get_value())
+
   def build (self, master:"tkinter.Widget") -> "tkinter.Widget":
-    checkbutton = tkinter.Checkbutton(master, variable=self.int_var)
+    checkbutton = tkinter.Checkbutton(master, variable=self.int_var, command=self._on_change)
     return checkbutton
 
   def load_from_param (self, param:bool):
