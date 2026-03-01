@@ -1,12 +1,11 @@
 
-import time
 import uilib
 import pytest
 import tkinter
 
-def test_ui_path (test_tk):
+def test_ui_path (test_toplevel):
   ui_path = uilib.ui.value.UI_Path("abc", uilib.ui.value.PathType.FILE)
-  built = ui_path.build(test_tk)
+  built = ui_path.build(test_toplevel)
   built.pack(fill=tkinter.X)
   assert ui_path.get_value() == "abc"
   assert ui_path.save_as_param() == "abc"

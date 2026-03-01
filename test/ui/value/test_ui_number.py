@@ -1,14 +1,13 @@
 
-import time
 import uilib
 import pytest
 import tkinter
 from uilib.ui.value.ui_number import _UI_Number
 
-def test_ui_number (test_tk):
+def test_ui_number (test_toplevel):
   int_var = tkinter.IntVar(value=0)
   ui_number = _UI_Number(int_var)
-  built = ui_number.build(test_tk)
+  built = ui_number.build(test_toplevel)
   built.pack(fill=tkinter.X)
   assert ui_number.get_value() == 0
   assert ui_number.save_as_param() == 0
@@ -16,9 +15,9 @@ def test_ui_number (test_tk):
   assert ui_number.get_value() == 1
   assert ui_number.save_as_param() == 1
 
-def test_ui_int (test_tk):
+def test_ui_int (test_toplevel):
   ui_int = uilib.ui.value.UI_Int(0)
-  built = ui_int.build(test_tk)
+  built = ui_int.build(test_toplevel)
   built.pack(fill=tkinter.X)
   assert ui_int.get_value() == 0
   assert ui_int.save_as_param() == 0
@@ -28,9 +27,9 @@ def test_ui_int (test_tk):
   with pytest.raises(ValueError):
     ui_int.load_from_param(None)
 
-def test_ui_float (test_tk):
+def test_ui_float (test_toplevel):
   ui_float = uilib.ui.value.UI_Float(0.0)
-  built = ui_float.build(test_tk)
+  built = ui_float.build(test_toplevel)
   built.pack(fill=tkinter.X)
   assert ui_float.get_value() == 0.0
   assert ui_float.save_as_param() == 0.0

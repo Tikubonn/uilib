@@ -3,9 +3,9 @@ import uilib
 import pytest
 import tkinter
 
-def test_ui_choices (test_tk):
+def test_ui_choices (test_toplevel):
   ui_choices = uilib.ui.value.UI_Choices(1, [1, 2, 3])
-  built = ui_choices.build(test_tk)
+  built = ui_choices.build(test_toplevel)
   built.pack(fill=tkinter.X)
   assert ui_choices.get_value() == 1
   assert ui_choices.save_as_param() == "1"

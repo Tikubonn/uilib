@@ -109,9 +109,6 @@ pip install .
 
 ### Test
 
-> [!WARNING]
-> テストは用意こそされていますが、原因不明の理由により `_tkinter.TclError: Can't find a usable tk.tcl in the following directories:` 例外が送出される場合があり、完全には機能しません。
-
 ```shell
 pip install .[test]
 pytest .

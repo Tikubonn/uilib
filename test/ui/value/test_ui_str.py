@@ -1,12 +1,11 @@
 
-import time
 import uilib
 import pytest
 import tkinter
 
-def test_ui_str (test_tk):
+def test_ui_str (test_toplevel):
   ui_str = uilib.ui.value.UI_Str("abc")
-  built = ui_str.build(test_tk)
+  built = ui_str.build(test_toplevel)
   built.pack(fill=tkinter.X)
   assert ui_str.get_value() == "abc"
   assert ui_str.save_as_param() == "abc"

@@ -1,10 +1,9 @@
 
-import time
 import uilib
 import pytest
 import tkinter
 
-def test_ui_hard_dict (test_tk):
+def test_ui_hard_dict (test_toplevel):
   ui_hard_dict = uilib.ui.value.UI_HardDict(
     {
       "a": uilib.ui.value.UI_Str("abc"),
@@ -15,7 +14,7 @@ def test_ui_hard_dict (test_tk):
       "b": "B"
     }
   )
-  built = ui_hard_dict.build(test_tk)
+  built = ui_hard_dict.build(test_toplevel)
   built.pack(fill=tkinter.X)
   assert ui_hard_dict.get_value() == {"a": "abc", "b": 123}
   assert ui_hard_dict.save_as_param() == {"a": "abc", "b": 123}

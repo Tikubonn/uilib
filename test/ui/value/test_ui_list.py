@@ -1,10 +1,9 @@
 
-import time
 import uilib
 import pytest
 import tkinter
 
-def test_ui_list (test_tk):
+def test_ui_list (test_toplevel):
   ui_list = uilib.ui.value.UI_List(
     [
       uilib.ui.value.UI_Int(0),
@@ -13,7 +12,7 @@ def test_ui_list (test_tk):
     ],
     add_func=lambda: uilib.ui.value.UI_Int(0)
   )
-  built = ui_list.build(test_tk)
+  built = ui_list.build(test_toplevel)
   built.pack(fill=tkinter.X)
   assert ui_list.get_value() == [0, 1, 2]
   assert ui_list.save_as_param() == [0, 1, 2]

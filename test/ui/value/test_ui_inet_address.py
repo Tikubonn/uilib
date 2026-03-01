@@ -1,12 +1,11 @@
 
-import time
 import uilib
 import pytest
 import tkinter
 
-def test_ui_inet_address (test_tk):
+def test_ui_inet_address (test_toplevel):
   ui_str = uilib.ui.value.UI_InetAddress(("127.0.0.1", 8080))
-  built = ui_str.build(test_tk)
+  built = ui_str.build(test_toplevel)
   built.pack(fill=tkinter.X)
   assert ui_str.get_value() == ("127.0.0.1", 8080)
   assert ui_str.save_as_param() == {

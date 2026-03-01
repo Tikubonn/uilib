@@ -1,5 +1,4 @@
 
-import time
 import uilib
 import pytest
 import tkinter
@@ -12,9 +11,9 @@ class SampleFlag (Flag):
   B = auto()
   C = auto()
 
-def test_ui_flag (test_tk):
+def test_ui_flag (test_toplevel):
   ui_flag = uilib.ui.value.UI_Flag(SampleFlag.A, SampleFlag)
-  built = ui_flag.build(test_tk)
+  built = ui_flag.build(test_toplevel)
   built.pack(fill=tkinter.X)
   assert ui_flag.get_value() is SampleFlag.A
   assert ui_flag.save_as_param() == [SampleFlag.A.name]

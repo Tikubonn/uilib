@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "uilib"
-version = "0.2.0"
+version = "0.1.0"
 dependencies = [
   "pillow >= 11.3.0"
 ]
@@ -42,7 +42,7 @@ include-package-data = true
 package-dir = {"" = "src"}
 
 [tool.setuptools.package-data]
-"*" = ["*.png"]
+"*" = ["*.png", "*.json"]
 
 [tool.pytest.ini_options]
 minversion = "6.0"

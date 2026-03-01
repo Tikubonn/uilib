@@ -1,10 +1,9 @@
 
-import time
 import uilib
 import pytest
 import tkinter
 
-def test_ui_dict (test_tk):
+def test_ui_dict (test_toplevel):
   ui_dict = uilib.ui.value.UI_Dict(
     {
       "a": uilib.ui.value.UI_Int(0),
@@ -14,7 +13,7 @@ def test_ui_dict (test_tk):
     add_func=lambda: uilib.ui.value.UI_Int(0),
     language={}
   )
-  built = ui_dict.build(test_tk)
+  built = ui_dict.build(test_toplevel)
   built.pack(fill=tkinter.X)
   assert ui_dict.get_value() == {"a": 0, "b": 1, "c": 2}
   assert ui_dict.save_as_param() == {"a": 0, "b": 1, "c": 2}
