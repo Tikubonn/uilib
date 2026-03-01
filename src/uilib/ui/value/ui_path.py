@@ -19,22 +19,29 @@ class UI_Path (IUI):
     self.ask_func = ask_func
     self.callback = callback
     self.icon_search = None
+    self.icon_delete = None
 
   def get_value (self) -> str:
     return self.str_var.get()
 
-  def _on_pressed (self):
+  def _on_pressed_search (self):
     path = self.ask_func()
     if path:
       self.str_var.set(path)
       if self.callback:
         self.callback(self.get_value())
 
+  def _on_pressed_delete (self):
+    self.str_var.set("")
+    if self.callback:
+      self.callback(self.get_value())
+
   def build (self, master:"tkinter.Widget") -> "tkinter.Widget":
 
     #Load icons.
 
     self.icon_search = image_set.get_image("icon-search", (12, 12))
+    self.icon_delete = image_set.get_image("icon-delete", (12, 12))
 
     #Main
 
@@ -46,12 +53,18 @@ class UI_Path (IUI):
       state=tkinter.DISABLED
     )
     entry.grid(column=0, row=0, sticky=tkinter.EW)
-    button = tkinter.ttk.Button(
+    search_button = tkinter.ttk.Button(
       base_frame, 
       image=self.icon_search, 
-      command=self._on_pressed
+      command=self._on_pressed_search
     )
-    button.grid(column=1, row=0, padx=(const_.PADDING, 0))
+    search_button.grid(column=1, row=0, padx=(const_.PADDING, 0))
+    delete_button = tkinter.ttk.Button(
+      base_frame,
+      image=self.icon_delete,
+      command=self._on_pressed_delete
+    )
+    delete_button.grid(column=2, row=0)
     return base_frame
 
   def load_from_param (self, param:str):
