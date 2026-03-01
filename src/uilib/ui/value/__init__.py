@@ -9,3 +9,4 @@ from .ui_hard_dict import UI_HardDict
 from .ui_list import UI_List
 from .ui_dict import UI_Dict
 from .ui_inet_address import UI_InetAddress
+from .ui_choices import UI_Choices
