@@ -1,5 +1,6 @@
 
 import tkinter
+import tkinter.ttk
 from uilib.ui.abc import IUI
 
 class UI_Toggle (IUI):
@@ -15,7 +16,7 @@ class UI_Toggle (IUI):
   def get_value (self) -> "typing.Any":
     return self.ui.get_value()
 
-  def _update_built (self):
+  def _rebuild (self):
     if self.int_var.get():
       self.built.grid(column=1, row=0, sticky=tkinter.W)
       self.alt_built.grid_forget()
@@ -24,17 +25,17 @@ class UI_Toggle (IUI):
       self.alt_built.grid(column=1, row=0, sticky=tkinter.W)
 
   def _on_change (self):
-    self._update_built()
+    self._rebuild()
 
   def build (self, master:"tkinter.Widget") -> "tkinter.Widget":
-    base_frame = tkinter.Frame(master)
-    checkbutton = tkinter.Checkbutton(base_frame, text="", variable=self.int_var, command=self._on_change)
-    checkbutton.grid(column=0, row=0, sticky=tkinter.N)
+    base_frame = tkinter.ttk.Frame(master)
+    checkbutton = tkinter.ttk.Checkbutton(base_frame, text="", variable=self.int_var, command=self._on_change)
+    checkbutton.grid(column=0, row=0, sticky=tkinter.NE)
     built = self.ui.build(base_frame)
-    alt_built = tkinter.Label(base_frame, text="...")
+    alt_built = tkinter.ttk.Label(base_frame, text="...")
     self.built = built
     self.alt_built = alt_built
-    self._update_built()
+    self._rebuild()
     return base_frame
 
   def load_from_param (self, param:"typing.Any"):

@@ -1,5 +1,6 @@
 
 import tkinter
+import tkinter.ttk
 import tkinter.filedialog
 import operator
 import functools 
@@ -23,7 +24,7 @@ class UI_Flag (IUI):
     self.callback = callback
     self.int_var_table = OrderedDict(((f, tkinter.IntVar(value=(f in value))) for f in type_))
 
-  def get_value (self) -> "enum.Flag":
+  def get_value (self) -> Flag:
     enable_flags = (f for f, var in self.int_var_table.items() if var.get())
     return functools.reduce(operator.or_, enable_flags, self.type_(0))
 
@@ -32,16 +33,22 @@ class UI_Flag (IUI):
       self.callback(self.get_value())
 
   def build (self, master:"tkinter.Widget") -> "tkinter.Widget":
-    base_frame = tkinter.Frame(master, bd=2, relief=tkinter.GROOVE)
-    for f, var in self.int_var_table.items():
+    base_frame = tkinter.ttk.Frame(master, relief=tkinter.GROOVE)
+    inner_frame = tkinter.ttk.Frame(base_frame)
+    inner_frame.pack(fill=tkinter.X, padx=const_.PADDING_L, pady=const_.PADDING_L)
+    for i, (f, var) in enumerate(self.int_var_table.items()):
+      if 0 < i:
+        pady = (const_.PADDING, 0)
+      else:
+        pady = 0
       checkbutton_text = self.label_table.get(f, f.name)
-      checkbutton = tkinter.Checkbutton(
-        base_frame, 
+      checkbutton = tkinter.ttk.Checkbutton(
+        inner_frame, 
         text=checkbutton_text, 
         variable=var,
         command=self._on_change
       )
-      checkbutton.pack(fill=tkinter.X, padx=const_.PADDING, pady=const_.PADDING)
+      checkbutton.pack(fill=tkinter.X, pady=pady)
     return base_frame
 
   def load_from_param (self, param:list[str]):

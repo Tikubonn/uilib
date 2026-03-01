@@ -1,6 +1,7 @@
 
 import uilib
 import tkinter
+import tkinter.ttk
 
 tk = tkinter.Tk()
 tk.title("Sample window")
@@ -16,6 +17,6 @@ ui = uilib.ui.value.UI_HardDict(
   }
 )
 ui.build(tk).pack(padx=10, pady=10)
-button = tkinter.Button(tk, text="Print", command=lambda: print(repr(ui.get_value())))
+button = tkinter.ttk.Button(tk, text="Print", command=lambda: print(repr(ui.get_value())))
 button.pack(padx=10, pady=(0, 10))
 tk.mainloop()

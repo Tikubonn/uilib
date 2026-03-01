@@ -1,5 +1,6 @@
 
 import tkinter
+import tkinter.ttk
 import tkinter.filedialog
 from uilib import const_
 from uilib import image_set
@@ -31,18 +32,26 @@ class UI_Path (IUI):
 
   def build (self, master:"tkinter.Widget") -> "tkinter.Widget":
 
-    #Load icon images.
+    #Load icons.
 
-    self.icon_search = image_set.get_image("icon-search", (16, 16))
+    self.icon_search = image_set.get_image("icon-search", (12, 12))
 
-    #Build.
+    #Main
 
-    base_frame = tkinter.Frame(master)
+    base_frame = tkinter.ttk.Frame(master)
     base_frame.columnconfigure(0, weight=1)
-    entry = tkinter.Entry(base_frame, textvariable=self.str_var, state=tkinter.DISABLED, width=const_.TEXT_FORM_WIDTH)
-    entry.grid(column=0, row=0, sticky=tkinter.EW, padx=(0, const_.PADDING), ipady=const_.INNER_PADDING)
-    button = tkinter.Button(base_frame, image=self.icon_search, command=self._on_pressed)
-    button.grid(column=1, row=0, sticky=tkinter.NS, padx=(const_.PADDING, 0), ipadx=const_.INNER_PADDING)
+    entry = tkinter.ttk.Entry(
+      base_frame, 
+      textvariable=self.str_var, 
+      state=tkinter.DISABLED
+    )
+    entry.grid(column=0, row=0, sticky=tkinter.EW)
+    button = tkinter.ttk.Button(
+      base_frame, 
+      image=self.icon_search, 
+      command=self._on_pressed
+    )
+    button.grid(column=1, row=0, padx=(const_.PADDING, 0))
     return base_frame
 
   def load_from_param (self, param:str):

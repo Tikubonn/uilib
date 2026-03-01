@@ -1,0 +1,16 @@
+{
+  "LABEL_INET_ADDRESS_HOST": "ホスト名",
+  "LABEL_INET_ADDRESS_PORT": "ポート番号",
+  "DIALOG_DICT_ADD_TITLE": "アイテムの追加",
+  "DIALOG_DICT_ADD": "追加されるアイテムのキー名を指定してください。",
+  "DIALOG_DICT_RENAME_TITLE": "キー名の変更",
+  "DIALOG_DICT_RENAME": "変更後のキー名を指定してください。",
+  "DIALOG_DICT_DELETE_TITLE": "アイテムの削除",
+  "DIALOG_DICT_DELETE": "選択されたアイテムを削除しますか?",
+  "ERROR_DICT_SAME_KEY_TITLE": "同一のキー名",
+  "ERROR_DICT_SAME_KEY": "同一のキー名を指定することは出来ません。",
+  "ERROR_DICT_KEY_EXISTS_TITLE": "既に存在するキー名",
+  "ERROR_DICT_KEY_EXISTS": "既に存在するキー名を指定することは出来ません。",
+  "ERROR_DICT_KEY_NOT_EXISTS_TITLE": "存在しないキー名",
+  "ERROR_DICT_KEY_NOT_EXISTS": "存在しないキー名を指定することは出来ません。"
+}

@@ -1,6 +1,6 @@
 
 import tkinter
-from uilib import const_
+import tkinter.ttk
 from uilib.ui.abc import IUI
 
 class UI_Button (IUI):
@@ -15,9 +15,9 @@ class UI_Button (IUI):
     return None
 
   def build (self, master:"tkinter.Widget") -> "tkinter.Widget":
-    base_frame = tkinter.Frame(master)
-    button = tkinter.Button(base_frame, text=self.label, command=self.callback)
-    button.pack(fill=tkinter.X, ipadx=const_.INNER_PADDING)
+    base_frame = tkinter.ttk.Frame(master)
+    button = tkinter.ttk.Button(base_frame, text=self.label, command=self.callback)
+    button.pack(fill=tkinter.X)
     return base_frame
 
   def load_from_param (self, param:None):

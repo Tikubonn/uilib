@@ -1,6 +1,6 @@
 
 import tkinter
-from uilib import enum_
+import tkinter.ttk
 from uilib import const_
 from uilib.ui.abc import IUI
 from typing import NamedTuple
@@ -10,10 +10,10 @@ class _CellInfo (NamedTuple):
   ui:"uilib.ui.abc.IUI|None"
   column_span:int = 1
   row_span:int = 1
-  align:"uilib.enum_.Direction" = enum_.Direction.W
+  align:str = tkinter.W
 
   @classmethod
-  def from_param (cls, param:"uilib.ui.abc.IUI|tuple[uilib.abc.IUI, int]|tuple[uilib.abc.IUI, int, int]|tuple[uilib.ui.abc.IUI, int, int, uilib.enum_.Direction]|None") -> "typing.Self":
+  def from_param (cls, param:"uilib.ui.abc.IUI|tuple[uilib.abc.IUI, int]|tuple[uilib.abc.IUI, int, int]|tuple[uilib.ui.abc.IUI, int, int, str]|None") -> "typing.Self":
     if isinstance(param, IUI):
       return cls(param)
     elif isinstance(param, tuple):
@@ -38,13 +38,15 @@ class UI_Layout (IUI):
 
   """レイアウトを実現する uilib.ui.abc.IUI オブジェクトです。"""
 
-  def __init__ (self, uis:"list[list[uilib.ui.abc.IUI|tuple[uilib.ui.abc.IUI, int]|tuple[uilib.ui.abc.IUI, int, int]|tuple[uilib.ui.abc.IUI, int, int, uilib.enum_.Direction]|None]]", value_uis:"dict[str, uilib.ui.abc.IUI]|uilib.ui.abc.IUI"):
+  def __init__ (self, uis:"list[list[uilib.ui.abc.IUI|tuple[uilib.ui.abc.IUI, int]|tuple[uilib.ui.abc.IUI, int, int]|tuple[uilib.ui.abc.IUI, int, int, str]|None]]", value_uis:"dict[str, uilib.ui.abc.IUI]|uilib.ui.abc.IUI"):
     self.uis = uis
     self.value_uis = value_uis
 
   def get_value (self) -> "list[typing.Any]":
     if isinstance(self.value_uis, dict):
-      return {key: ui.get_value() for key, ui in self.value_uis.items()}
+      return {
+        key: ui.get_value() for key, ui in self.value_uis.items()
+      }
     elif isinstance(self.value_uis, IUI):
       return self.value_uis.get_value()
     else:
@@ -56,45 +58,32 @@ class UI_Layout (IUI):
         _CellInfo.from_param(ui) for ui in inner_uis
       ] for inner_uis in self.uis
     ]
-    base_frame = tkinter.Frame(master, bd=2, relief=tkinter.GROOVE)
+    base_frame = tkinter.ttk.Frame(master)
     row = 0
     for inner_cell_infos in cell_infos:
       if row == 0:
-        pady = (0, const_.PADDING)
-      elif row +1 < len(cell_infos):
-        pady = (const_.PADDING, 0)
+        pady = 0
       else:
-        pady = const_.PADDING
+        pady = (const_.PADDING, 0)
       column = 0
       for cell_info in inner_cell_infos:
         if column == 0:
-          padx = (0, const_.PADDING)
-        elif column +1 < len(inner_cell_infos):
-          padx = (const_.PADDING, 0)
+          padx = 0
         else:
-          padx = const_.PADDING
+          padx = (const_.PADDING, 0)
         if cell_info.ui:
-          match cell_info.align:
-            case enum_.Direction.E:
-              sticky = tkinter.E
-            case enum_.Direction.W:
-              sticky = tkinter.W
-            case enum_.Direction.E | enum_.Direction.W:
-              sticky = tkinter.EW
-            case _:
-              sticky = tkinter.W
           built = cell_info.ui.build(base_frame)
           built.grid(
             column=column, 
             columnspan=cell_info.column_span, 
             row=row, 
             rowspan=cell_info.row_span, 
-            sticky=sticky,
+            sticky=cell_info.align,
             padx=padx, 
             pady=pady
           )
         column += cell_info.column_span
-      row += min((cell_info.row_span for cell_info in inner_cell_infos), default=0)
+      row += min((ci.row_span for ci in inner_cell_infos), default=0)
     return base_frame
 
   def load_from_param (self, param:"list[typing.Any]"):

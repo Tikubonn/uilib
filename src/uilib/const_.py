@@ -1,8 +1,5 @@
 
 """uilib で使用される定数が定義されています。"""
 
-PADDING:int = 2
-PADDING_L:int = 6
-INNER_PADDING:int = 4
-TEXT_FORM_WIDTH:int = 30
-NUMERIC_FORM_WIDTH:int = 6
+PADDING:int = 4
+PADDING_L:int = 12

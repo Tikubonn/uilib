@@ -1,6 +1,7 @@
 
 import uilib
 import tkinter
+import tkinter.ttk
 
 def callback (value:str):
   print("Changed to", value)
@@ -10,6 +11,6 @@ tk.title("Sample window")
 tk.minsize(320, 240)
 ui = uilib.ui.value.UI_Str("abc", callback=callback)
 ui.build(tk).pack(padx=10, pady=10)
-button = tkinter.Button(tk, text="Print", command=lambda: print(repr(ui.get_value())))
+button = tkinter.ttk.Button(tk, text="Print", command=lambda: print(repr(ui.get_value())))
 button.pack(padx=10, pady=(0, 10))
 tk.mainloop()

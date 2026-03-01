@@ -1,5 +1,6 @@
 
 import tkinter
+import tkinter.ttk
 from uilib import const_
 from uilib.ui.abc import IUI
 
@@ -19,9 +20,9 @@ class UI_Text (IUI):
     self.message.config(width=self.base_frame.winfo_width())
 
   def build (self, master:"tkinter.Widget") -> "tkinter.Widget":
-    base_frame = tkinter.Frame(master)
+    base_frame = tkinter.ttk.Frame(master)
     base_frame.bind("<Configure>", self._on_resize)
-    message = tkinter.Message(base_frame, text=self.text)
+    message = tkinter.Message(base_frame, text=self.text) #tmp.
     message.pack(anchor=tkinter.W)
     self.base_frame = base_frame
     self.message = message

@@ -16,7 +16,7 @@ def test_ui_layout (test_tk):
         (ints[2], 2, 2),
       ],
       [
-        (ints[3], 2, 2, uilib.enum_.Direction.E),
+        (ints[3], 2, 2, tkinter.E),
       ],
     ],
     {

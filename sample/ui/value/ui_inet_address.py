@@ -1,18 +1,17 @@
 
 import uilib
-import logging
 import tkinter
 import tkinter.ttk
 
-logging.basicConfig(level=logging.DEBUG)
+def callback (value:tuple[str, int]):
+  print("Changed to", value)
 
 tk = tkinter.Tk()
 tk.title("Sample window")
 tk.minsize(320, 240)
-ui = uilib.ui.value.UI_Dict(
-  {}, 
-  add_func=lambda: uilib.ui.value.UI_Int(0, (0, 100, 1)),
-  language={}
+ui = uilib.ui.value.UI_InetAddress(
+  ("127.0.0.1", 8080), 
+  callback=callback
 )
 ui.build(tk).pack(padx=10, pady=10)
 button = tkinter.ttk.Button(tk, text="Print", command=lambda: print(repr(ui.get_value())))

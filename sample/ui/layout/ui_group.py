@@ -1,6 +1,7 @@
 
 import uilib
 import tkinter
+import tkinter.ttk
 
 tk = tkinter.Tk()
 tk.title("Sample window")
@@ -11,7 +12,7 @@ ui_layout = uilib.ui.layout.UI_Group(
   [
     [ints[0], ints[1], ints[2]], 
     [(ints[3], 2), (ints[4], 1)], 
-    [(ints[5], 3, 1, uilib.enum_.Direction.E)]], 
+    [(ints[5], 3, 1, tkinter.E)]], 
   {
     "int0": ints[0],
     "int1": ints[1],
@@ -22,6 +23,18 @@ ui_layout = uilib.ui.layout.UI_Group(
   }
 )
 ui_layout.build(tk).pack(padx=10, pady=10)
-button = tkinter.Button(tk, text="Print", command=lambda: print(repr(ui_layout.get_value())))
-button.pack(padx=10, pady=(0, 10))
+button_frame = tkinter.ttk.Frame(tk)
+button_frame.pack(fill=tkinter.X, padx=10, pady=10)
+print_as_param_button = tkinter.ttk.Button(
+  button_frame, 
+  text="Print as param", 
+  command=lambda: print(repr(ui_layout.save_as_param()))
+)
+print_as_param_button.pack(side=tkinter.RIGHT)
+print_button = tkinter.ttk.Button(
+  button_frame, 
+  text="Print value", 
+  command=lambda: print(repr(ui_layout.get_value()))
+)
+print_button.pack(side=tkinter.RIGHT)
 tk.mainloop()

@@ -1,5 +1,6 @@
 
 import tkinter
+import tkinter.ttk
 from uilib.ui.abc import IUI
 
 class UI_Bool (IUI):
@@ -18,7 +19,7 @@ class UI_Bool (IUI):
       self.callback(self.get_value())
 
   def build (self, master:"tkinter.Widget") -> "tkinter.Widget":
-    checkbutton = tkinter.Checkbutton(master, variable=self.int_var, command=self._on_change)
+    checkbutton = tkinter.ttk.Checkbutton(master, variable=self.int_var, command=self._on_change)
     return checkbutton
 
   def load_from_param (self, param:bool):

@@ -1,6 +1,6 @@
 
 import tkinter
-from uilib import const_
+import tkinter.ttk
 from uilib.ui.abc import IUI
 
 class UI_Str (IUI):
@@ -19,9 +19,12 @@ class UI_Str (IUI):
       self.callback(self.get_value())
 
   def build (self, master:"tkinter.Widget") -> "tkinter.Widget":
-    base_frame = tkinter.Frame(master)
-    entry = tkinter.Entry(base_frame, textvariable=self.str_var, width=const_.TEXT_FORM_WIDTH)
-    entry.pack(fill=tkinter.X, expand=True, ipadx=const_.INNER_PADDING, ipady=const_.INNER_PADDING)
+    base_frame = tkinter.ttk.Frame(master)
+    entry = tkinter.ttk.Entry(
+      base_frame, 
+      textvariable=self.str_var
+    )
+    entry.pack(fill=tkinter.X)
     entry.bind("<FocusOut>", self._on_change)
     entry.bind("<Return>", self._on_change)
     return base_frame

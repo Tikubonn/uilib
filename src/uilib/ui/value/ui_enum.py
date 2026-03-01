@@ -1,9 +1,11 @@
 
 import tkinter
+import tkinter.ttk
 import tkinter.filedialog
 from enum import Enum
 from uilib import const_
 from uilib.ui.abc import IUI
+from collections import OrderedDict
 
 class UI_Enum (IUI):
 
@@ -18,37 +20,34 @@ class UI_Enum (IUI):
     self.type_ = type_
     self.label_table = label_table
     self.callback = callback
-    enum_items = tuple(type_)
-    self.enum_items = enum_items
-    self.int_var = tkinter.IntVar(value=enum_items.index(value))
+    enum_table = OrderedDict(((label_table.get(e, e.name), e) for e in type_))
+    print(enum_table)
+    self.enum_table = enum_table
+    self.var = tkinter.StringVar(value=label_table.get(value, value.name))
 
   def get_value (self) -> "enum.Enum":
-    index = self.int_var.get()
-    return self.enum_items[index]
+    value = self.var.get()
+    return self.enum_table[value]
 
-  def _on_change (self):
+  def _on_change (self, event:"tkinter.Event|None"=None):
     if self.callback:
-      self.callback(self.get_value())
+      value = self.get_value()
+      self.callback(value)
 
-  def build (self, master:"tkinter.Widget") -> "tkinter.Widget":
-    base_frame = tkinter.Frame(master, bd=2, relief=tkinter.GROOVE)
-    for i, e in enumerate(self.enum_items):
-      radiobutton_text = self.label_table.get(e, e.name)
-      radiobutton = tkinter.Radiobutton(
-        base_frame, 
-        text=radiobutton_text, 
-        variable=self.int_var, 
-        value=i, 
-        command=self._on_change
-      )
-      radiobutton.grid(column=0, row=i, sticky=tkinter.W, padx=const_.PADDING, pady=const_.PADDING)
-    return base_frame
+  def build (self, master:tkinter.Widget) -> tkinter.Widget:
+    combobox = tkinter.ttk.Combobox(
+      master, 
+      values=list(self.enum_table.keys()),
+      textvariable=self.var,
+      state="readonly"
+    )
+    combobox.bind("<<ComboboxSelected>>", self._on_change)
+    return combobox
 
   def load_from_param (self, param:str):
     if isinstance(param, str):
       e = self.type_[param]
-      index = self.enum_items.index(e)
-      self.int_var.set(index)
+      self.var.set(self.label_table.get(e, e.name))
     else:
       raise ValueError(param) #tmp.
 

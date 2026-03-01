@@ -11,7 +11,8 @@ def test_ui_dict (test_tk):
       "b": uilib.ui.value.UI_Int(1),
       "c": uilib.ui.value.UI_Int(2),
     },
-    add_func=lambda: uilib.ui.value.UI_Int(0)
+    add_func=lambda: uilib.ui.value.UI_Int(0),
+    language={}
   )
   built = ui_dict.build(test_tk)
   built.pack(fill=tkinter.X)

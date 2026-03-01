@@ -1,6 +1,6 @@
 
 import tkinter
-from uilib import const_
+import tkinter.ttk
 from uilib.ui.abc import IUI
 
 class _UI_Number (IUI):
@@ -22,24 +22,26 @@ class _UI_Number (IUI):
       self.callback(self.get_value())
 
   def build (self, master:"tkinter.Widget") -> "tkinter.Widget":
-    base_frame = tkinter.Frame(master)
+    base_frame = tkinter.ttk.Frame(master)
     if self.value_range_step:
       min_, max_, step = self.value_range_step
-      spinbox = tkinter.Spinbox(
+      spinbox = tkinter.ttk.Spinbox(
         base_frame, 
         from_=min_, 
         to=max_, 
         increment=step, 
-        textvariable=self.var, 
-        width=const_.NUMERIC_FORM_WIDTH,
+        textvariable=self.var,
         command=self._on_change
       )
-      spinbox.pack(fill=tkinter.X, ipady=const_.INNER_PADDING)
+      spinbox.pack(fill=tkinter.X)
       spinbox.bind("<FocusOut>", self._on_change)
       spinbox.bind("<Return>", self._on_change)
     else:
-      entry = tkinter.Entry(base_frame, textvariable=self.var, width=const_.NUMERIC_FORM_WIDTH)
-      entry.pack(fill=tkinter.X, ipady=const_.INNER_PADDING)
+      entry = tkinter.ttk.Entry(
+        base_frame, 
+        textvariable=self.var
+      )
+      entry.pack(fill=tkinter.X)
       entry.bind("<FocusOut>", self._on_change)
       entry.bind("<Return>", self._on_change)
     return base_frame
