@@ -35,6 +35,7 @@ class UI_Choices (IUI):
 
   def build (self, master:tkinter.Widget) -> tkinter.Widget:
     combobox = tkinter.ttk.Combobox(
+      master,
       textvariable=self.var,
       values=list(self.value_table.keys()),
       state="readonly"
