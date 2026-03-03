@@ -9,7 +9,10 @@ class UI_HardDict (IUI):
 
   """固定された要素をもつ辞書を表現する uilib.ui.abc.IUI オブジェクトです。"""
 
-  def __init__ (self, uis:"dict[str, uilib.ui.abc.IUI]", label_table:dict[str, str]={}):
+  def __init__ (
+    self, 
+    uis:dict[str, IUI], 
+    label_table:dict[str, str]={}):
     self.uis = OrderedDict(uis)
     self.label_table = label_table
 

@@ -14,7 +14,7 @@ class UI_Str (IUI):
   def get_value (self) -> str:
     return self.str_var.get()
 
-  def _on_change (self, event:tkinter.Event|None=None):
+  def _on_changed (self, event:tkinter.Event|None=None):
     if self.callback:
       self.callback(self.get_value())
 
@@ -25,13 +25,14 @@ class UI_Str (IUI):
       textvariable=self.str_var
     )
     entry.pack(fill=tkinter.X)
-    entry.bind("<FocusOut>", self._on_change)
-    entry.bind("<Return>", self._on_change)
+    entry.bind("<FocusOut>", self._on_changed)
+    entry.bind("<Return>", self._on_changed)
     return base_frame
 
   def load_from_param (self, param:str):
     if isinstance(param, str):
       self.str_var.set(param)
+      self._on_changed()
     else:
       raise ValueError(param) #tmp.
   

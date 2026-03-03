@@ -53,6 +53,10 @@ class UI_Path (IUI):
   def get_value (self) -> str:
     return self.str_var.get()
 
+  def _on_changed (self):
+    if self.callback:
+      self.callback(self.get_value())
+
   def _on_pressed_search (self):
     match self.type:
       case PathType.FILE:
@@ -63,13 +67,11 @@ class UI_Path (IUI):
         raise ValueError(self.type) #tmp.
     if path:
       self.str_var.set(path)
-      if self.callback:
-        self.callback(self.get_value())
+      self._on_changed()
 
   def _on_pressed_delete (self):
     self.str_var.set("")
-    if self.callback:
-      self.callback(self.get_value())
+    self._on_changed()
 
   def build (self, master:"tkinter.Widget") -> "tkinter.Widget":
 
@@ -105,6 +107,7 @@ class UI_Path (IUI):
   def load_from_param (self, param:str):
     if isinstance(param, str):
       self.str_var.set(param)
+      self._on_changed()
     else:
       raise ValueError(param) #tmp.
   

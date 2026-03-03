@@ -17,7 +17,7 @@ class _UI_Number (IUI):
   def get_value (self) -> "typing.Any":
     return self.var.get()
 
-  def _on_change (self, event:tkinter.Event|None=None):
+  def _on_changed (self, event:tkinter.Event|None=None):
     if self.callback:
       self.callback(self.get_value())
 
@@ -31,23 +31,24 @@ class _UI_Number (IUI):
         to=max_, 
         increment=step, 
         textvariable=self.var,
-        command=self._on_change
+        command=self._on_changed
       )
       spinbox.pack(fill=tkinter.X)
-      spinbox.bind("<FocusOut>", self._on_change)
-      spinbox.bind("<Return>", self._on_change)
+      spinbox.bind("<FocusOut>", self._on_changed)
+      spinbox.bind("<Return>", self._on_changed)
     else:
       entry = tkinter.ttk.Entry(
         base_frame, 
         textvariable=self.var
       )
       entry.pack(fill=tkinter.X)
-      entry.bind("<FocusOut>", self._on_change)
-      entry.bind("<Return>", self._on_change)
+      entry.bind("<FocusOut>", self._on_changed)
+      entry.bind("<Return>", self._on_changed)
     return base_frame
 
   def load_from_param (self, param:"typing.Any"):
     self.var.set(param)
+    self._on_changed()
 
   def save_as_param (self) -> "typing.Any":
     return self.var.get()

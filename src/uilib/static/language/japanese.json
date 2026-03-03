@@ -12,5 +12,8 @@
   "ERROR_DICT_KEY_EXISTS_TITLE": "既に存在するキー名",
   "ERROR_DICT_KEY_EXISTS": "既に存在するキー名を指定することは出来ません。",
   "ERROR_DICT_KEY_NOT_EXISTS_TITLE": "存在しないキー名",
-  "ERROR_DICT_KEY_NOT_EXISTS": "存在しないキー名を指定することは出来ません。"
+  "ERROR_DICT_KEY_NOT_EXISTS": "存在しないキー名を指定することは出来ません。",
+  "BUTTON_CLOSE": "閉じる",
+  "DIALOG_WORKER_ABORT_CONFIRMATION_TITLE": "処理の中断",
+  "DIALOG_WORKER_ABORT_CONFIRMATION": "実行中の処理を中断しますか?"
 }

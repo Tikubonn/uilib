@@ -1,4 +1,11 @@
 
+import tkinter
+import tkinter.ttk
+from uilib import const_
+from uilib import image_set
+from uilib.ui.abc import IUI
+from dataclasses import dataclass
+
 """
 +-----------------+--------+
 |                 | add    |
@@ -10,13 +17,6 @@
 | up | down | ... | delete |
 +----+------+-----+--------+
 """
-
-import tkinter
-import tkinter.ttk
-from uilib import const_
-from uilib import image_set
-from uilib.ui.abc import IUI
-from dataclasses import dataclass
 
 @dataclass
 class _HandlerSet:
@@ -52,6 +52,10 @@ class UI_List (IUI):
   def _can_move_up (self, index:int) -> bool:
     return 0 < index and index < len(self.uis)
 
+  def _on_changed (self):
+    if self.callback:
+      self.callback(self.get_value())
+
   def move_up (self, index:int):
     if self._can_move_up(index):
       ui1 = self.uis[index]
@@ -59,8 +63,7 @@ class UI_List (IUI):
       self.uis[index] = ui2
       self.uis[index -1] = ui1 
       self._rebuild()
-      if self.callback:
-        self.callback(self.get_value())
+      self._on_changed()
     else:
       raise IndexError(index)
 
@@ -74,8 +77,7 @@ class UI_List (IUI):
       self.uis[index] = ui2 
       self.uis[index +1] = ui1 
       self._rebuild()
-      if self.callback:
-        self.callback(self.get_value())
+      self._on_changed()
     else:
       raise IndexError(index)
 
@@ -83,8 +85,7 @@ class UI_List (IUI):
     if 0 <= index and index < len(self.uis):
       self.uis = self.uis[:index] + self.uis[index +1:]
       self._rebuild()
-      if self.callback:
-        self.callback(self.get_value())
+      self._on_changed()
     else:
       raise IndexError(index)
 
@@ -171,6 +172,7 @@ class UI_List (IUI):
         ui.load_from_param(inner_param)
         self.uis.append(ui)
       self._rebuild()
+      self._on_changed()
     else:
       raise ValueError(param) #tmp.
   

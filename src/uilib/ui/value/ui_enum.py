@@ -21,7 +21,6 @@ class UI_Enum (IUI):
     self.label_table = label_table
     self.callback = callback
     enum_table = OrderedDict(((label_table.get(e, e.name), e) for e in type_))
-    print(enum_table)
     self.enum_table = enum_table
     self.var = tkinter.StringVar(value=label_table.get(value, value.name))
 
@@ -29,10 +28,12 @@ class UI_Enum (IUI):
     value = self.var.get()
     return self.enum_table[value]
 
-  def _on_change (self, event:"tkinter.Event|None"=None):
+  def _on_changed (self):
     if self.callback:
-      value = self.get_value()
-      self.callback(value)
+      self.callback(self.get_value())
+
+  def _on_combobox_selected (self, event:tkinter.Event|None=None):
+    self._on_changed()
 
   def build (self, master:tkinter.Widget) -> tkinter.Widget:
     combobox = tkinter.ttk.Combobox(
@@ -41,13 +42,14 @@ class UI_Enum (IUI):
       textvariable=self.var,
       state="readonly"
     )
-    combobox.bind("<<ComboboxSelected>>", self._on_change)
+    combobox.bind("<<ComboboxSelected>>", self._on_combobox_selected)
     return combobox
 
   def load_from_param (self, param:str):
     if isinstance(param, str):
       e = self.type_[param]
       self.var.set(self.label_table.get(e, e.name))
+      self._on_changed()
     else:
       raise ValueError(param) #tmp.
 

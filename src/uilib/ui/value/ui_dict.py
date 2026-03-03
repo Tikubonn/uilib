@@ -53,6 +53,10 @@ class UI_Dict (IUI):
   def _update_listbox_var (self):
     self.listbox_var.set(list(self.uis.keys()))
 
+  def _on_changed (self):
+    if self.callback:
+      self.callback(self.get_value())
+
   def _on_pressed_add (self):
     key = tkinter.simpledialog.askstring(
       language.translate("DIALOG_DICT_ADD_TITLE", self.language),
@@ -64,8 +68,7 @@ class UI_Dict (IUI):
       self.uis[key] = ui
       self._update_listbox_var()
       self._rebuild()
-      if self.callback:
-        self.callback(self.get_value())
+      self._on_changed()
     else:
       tkinter.messagebox.showerror(
         language.translate("ERROR_DICT_KEY_EXISTS_TITLE", self.language),
@@ -89,8 +92,7 @@ class UI_Dict (IUI):
             self.entry_var.set(alt_key) #置換後に入力欄を新しい名前に差し替えます。
             self._update_listbox_var()
             self._rebuild()
-            if self.callback:
-              self.callback(self.get_value())
+            self._on_changed()
           else:
             tkinter.messagebox.showerror(
               language.translate("ERROR_DICT_KEY_NOT_EXISTS_TITLE", self.language),
@@ -115,8 +117,7 @@ class UI_Dict (IUI):
           self.entry_var.set("") #削除後に入力欄を空にします。
           self._update_listbox_var()
           self._rebuild()
-          if self.callback:
-            self.callback(self.get_value())
+          self._on_changed()
       else:
         tkinter.messagebox.showerror(
           language.translate("ERROR_DICT_KEY_NOT_EXISTS_TITLE", self.language),
@@ -131,8 +132,7 @@ class UI_Dict (IUI):
       self.entry_var.set(key)
       self._update_listbox_var()
       self._rebuild()
-      if self.callback:
-        self.callback(self.get_value())
+      self._on_changed()
 
   def _rebuild (self):
     if self.content_frame:
@@ -218,8 +218,7 @@ class UI_Dict (IUI):
         self.uis[key] = ui
       self._update_listbox_var()
       self._rebuild()
-      if self.callback:
-        self.callback(self.get_value())
+      self._on_changed()
     else:
       raise ValueError(param) #tmp.
 

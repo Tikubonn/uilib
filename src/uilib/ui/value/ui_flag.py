@@ -28,7 +28,7 @@ class UI_Flag (IUI):
     enable_flags = (f for f, var in self.int_var_table.items() if var.get())
     return functools.reduce(operator.or_, enable_flags, self.type_(0))
 
-  def _on_change (self):
+  def _on_changed (self):
     if self.callback:
       self.callback(self.get_value())
 
@@ -46,7 +46,7 @@ class UI_Flag (IUI):
         inner_frame, 
         text=checkbutton_text, 
         variable=var,
-        command=self._on_change
+        command=self._on_changed
       )
       checkbutton.pack(fill=tkinter.X, pady=pady)
     return base_frame
@@ -58,6 +58,7 @@ class UI_Flag (IUI):
       for p in param:
         e = self.type_[p]
         self.int_var_table[e].set(1)
+      self._on_changed()
     else:
       raise ValueError(param) #tmp.
   
