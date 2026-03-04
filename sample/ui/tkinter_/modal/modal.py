@@ -4,7 +4,7 @@ import tkinter
 import tkinter.ttk
 
 def setup_func (master:tkinter.Widget):
-  master.title("Sample dialog")
+  master.title("Sample modal")
   label = tkinter.ttk.Label(master, text="This is sample text.")
   label.pack(
     padx=uilib.const_.PADDING_L, 
@@ -13,7 +13,7 @@ def setup_func (master:tkinter.Widget):
 
 def on_pressed ():
   global tk
-  dialog = uilib.ui.tkinter_.dialog.Dialog(tk, setup_func)
+  modal = uilib.ui.tkinter_.modal.Modal(tk, setup_func)
 
 tk = tkinter.Tk()
 tk.title("Sample window")

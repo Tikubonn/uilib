@@ -6,7 +6,7 @@ from enum import Enum, unique, auto
 from uilib import global_
 from uilib import language
 from threading import Thread, RLock
-from .dialog import Dialog
+from .modal import Modal
 
 @unique
 class WorkerStatus (Enum):
@@ -73,7 +73,7 @@ class WorkerState:
     with self._lock:
       self._status = WorkerStatus.ABORTED
 
-class WorkerDialog (Dialog):
+class WorkerModal (Modal):
 
   """
   """
@@ -83,7 +83,7 @@ class WorkerDialog (Dialog):
 
   def _thread_main (
     self, 
-    progression_func:"typing.Callable[[uilib.ui.tkinter_.dialog.worker_dialog.WorkerState], None]", 
+    progression_func:"typing.Callable[[uilib.ui.tkinter_.modal.worker_modal.WorkerState], None]", 
     worker_state:WorkerState):
     try:
       progression_func(worker_state)
@@ -132,7 +132,7 @@ class WorkerDialog (Dialog):
     master:tkinter.Widget, 
     setup_func:"typing.Callable[[tkinter.Widget], None]", 
     update_func:"typing.Callable[[float], None]", 
-    progression_func:"typing.Callable[[uilib.ui.tkinter_.dialog.worker_dialog.WorkerState], None]", 
+    progression_func:"typing.Callable[[uilib.ui.tkinter_.modal.worker_modal.WorkerState], None]", 
     completion_func:"typing.Callable[[typing.Any], None]", 
     *,
     language:dict[str, str]|None=None):

@@ -1,9 +1,9 @@
 
 import tkinter
 import tkinter.ttk
-from .worker_dialog import WorkerDialog
+from .worker_modal import WorkerModal
 
-class WorkerDialog_Progression (WorkerDialog):
+class WorkerModal_Progression (WorkerModal):
 
   _MAX_PROGRESSION_VALUE:"typing.ClassVar[int]" = 1000
 
@@ -47,7 +47,7 @@ class WorkerDialog_Progression (WorkerDialog):
     master:"tkinter.Widget",
     title:str, 
     message:str,
-    progression_func:"typing.Callable[[uilib.ui.tkinter_.dialog.worker_dialog.WorkerState], None]",
+    progression_func:"typing.Callable[[uilib.ui.tkinter_.modal.worker_modal.WorkerState], None]",
     completion_func:"typing.Callable[[typing.Any], None]|None"=None,
     *,
     language:dict[str, str]|None=None):

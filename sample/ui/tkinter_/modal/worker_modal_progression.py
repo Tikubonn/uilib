@@ -4,12 +4,12 @@ import uilib
 import tkinter
 import tkinter.ttk
 
-def progression_func (worker_state:uilib.ui.tkinter_.dialog.WorkerDialog):
+def progression_func (worker_state:uilib.ui.tkinter_.modal.WorkerModal):
   TOTAL_COUNT = 100
   sum_ = 0
   for i in range(TOTAL_COUNT +1):
     match worker_state.status:
-      case uilib.ui.tkinter_.dialog.WorkerStatus.PENDING:
+      case uilib.ui.tkinter_.modal.WorkerStatus.PENDING:
         sum_ += i
         worker_state.set_progression(i / TOTAL_COUNT)
         time.sleep(1 / TOTAL_COUNT)
@@ -22,9 +22,9 @@ def completed_func (result:int):
 
 def on_pressed ():
   global tk
-  dialog = uilib.ui.tkinter_.dialog.WorkerDialog_Progression(
+  modal = uilib.ui.tkinter_.modal.WorkerModal_Progression(
     tk,
-    "Sample dialog", 
+    "Sample modal", 
     "Calculate sum numbers between 0 ~ 100.",
     progression_func,
     completed_func

@@ -1,7 +1,7 @@
 
 import tkinter
 
-class Dialog (tkinter.Toplevel):
+class Modal (tkinter.Toplevel):
 
   def __init__ (
     self, 

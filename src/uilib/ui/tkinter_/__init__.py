@@ -1,3 +1,3 @@
 
-from . import dialog 
+from . import modal
 from .scrollable import Scrollable
