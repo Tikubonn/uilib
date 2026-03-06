@@ -1,4 +1,5 @@
 
+import time
 import itertools
 from typing import Generator
 from threading import RLock
@@ -40,10 +41,13 @@ class SubWindow_ThreadPoolWorkerProgression (SubWindow_WorkerProgression):
 
   def __update_func (self) -> "typing.Generator[float, None, None]":
     self.__executor = ThreadPoolExecutor()
-    features = []
-    for func in self.__update_funcs:
-      feature = self.__executor.submit(self.__exec_update_func, func)
-      features.append(feature)
+    try:
+      features = []
+      for func in self.__update_funcs:
+        feature = self.__executor.submit(self.__exec_update_func, func)
+        features.append(feature)
+    finally:
+      self.__all_submitted = True #この処理が完了するまでの間 .join を実行させてはならない。
     while not all((f.done() for f in features)):
       feature_exceptions = {}
       for f in features:
@@ -127,6 +131,7 @@ class SubWindow_ThreadPoolWorkerProgression (SubWindow_WorkerProgression):
     }
     self.__lock = RLock()
     self.__executor = None
+    self.__all_submitted = False
     super().__init__(
       master,
       title,
@@ -142,6 +147,8 @@ class SubWindow_ThreadPoolWorkerProgression (SubWindow_WorkerProgression):
     )
 
   def join (self):
+    while not self.__all_submitted:
+      time.sleep(0) #無意味だったはずだが、スレッドの実行権を別スレッドに委譲するコード。
     if self.__executor:
       self.__executor.shutdown(wait=True)
     super().join() #ThreadPoolExecutor の待機後に親クラスの待機処理に移行します。

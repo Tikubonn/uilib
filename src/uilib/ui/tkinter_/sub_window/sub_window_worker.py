@@ -47,18 +47,25 @@ class SubWindow_Worker (SubWindow):
   def __after_loop (self):
     match self.__worker_status:
       case WorkerStatus.PENDING:
-        self.__widget_update_func()
+        if self.__widget_update_func:
+          self.__widget_update_func()
         self.__after_id = self.after(1000 // self._REFLESH_RATE, self.__after_loop) #self.after によるループを継続する。
       case WorkerStatus.PAUSED:
         self.__after_id = self.after(1000 // self._REFLESH_RATE, self.__after_loop) #self.after によるループを継続する。
       case WorkerStatus.FAILED:
-        self.__widget_failed_func()
-        self.__thread.join()
-        self.destroy()
+        if not self.__execed_widget_result_func:
+          self.__execed_widget_result_func = True
+          # self.__thread.join() #ワーカースレッドに対する待機処理は外部公開している .join メソッドが担当する
+          if self.__widget_failed_func:
+            self.__widget_failed_func()
+          self.destroy()
       case WorkerStatus.SUCCEED:
-        self.__widget_succeed_func()
-        self.__thread.join()
-        self.destroy()
+        if not self.__execed_widget_result_func:
+          self.__execed_widget_result_func = True
+          # self.__thread.join() #ワーカースレッドに対する待機処理は外部公開している .join メソッドが担当する
+          if self.__widget_succeed_func:
+            self.__widget_succeed_func()
+          self.destroy()
       case _:
         raise ValueError(self.__worker_status) #tmp.
 
@@ -101,15 +108,16 @@ class SubWindow_Worker (SubWindow):
     atexit.register(self.join) #最低でもアプリ終了時に後処理を行わせる
 
   def __on_destroy (self, event:"tkinter.Event"):
+    if self.__after_id:
+      self.after_cancel(self.__after_id) #self.after によるループが予約されているならば解除する。
     match self.__worker_status:
       case WorkerStatus.PENDING | WorkerStatus.PAUSED: #途中中断ならば失敗として扱う
         self.__worker_status = WorkerStatus.FAILED
       case WorkerStatus.FAILED | WorkerStatus.SUCCEED: #既に状態が決まっているならば何も行わない
         pass
       case _:
-        raise ValueError(self.__worker_status) #tmp.
-    if self.__after_id:
-      self.after_cancel(self.__after_id) #self.after によるループが予約されているならば解除する。
+        raise ValueError(self.__worker_status)
+    self.__after_loop() #self.__worker_status の値は WorkerStatus.FAILED, WorkerStatus.SUCCEED のいずれかなので1度しか実行されない前提として扱う。
 
   def __on_wm_delete_window (self):
     match self.__worker_status:
@@ -130,7 +138,7 @@ class SubWindow_Worker (SubWindow):
             case WorkerStatus.PENDING | WorkerStatus.FAILED | WorkerStatus.SUCCEED:
               pass
             case _:
-              raise ValueError(self.__worker_status)
+              raise ValueError(self.__worker_status) #tmp.
 
   def __init__ (
     self,
@@ -200,6 +208,7 @@ class SubWindow_Worker (SubWindow):
     self.__language = language or global_.DEFAULT_LANGUAGE
     self.__pause_on_asking = pause_on_asking
     self.__worker_status = WorkerStatus.PENDING
+    self.__execed_widget_result_func = False #widget_failed_func, widget_succeed_func のいずれかが実行されたかを記録する変数
     self.__after_id = ""
     self.__thread = None
     self.__after_loop()

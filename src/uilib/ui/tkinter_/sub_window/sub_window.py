@@ -11,7 +11,7 @@ class SubWindow (tkinter.Toplevel):
     master:"tkinter.Widget",
     setup_func:"typing.Callable[[tkinter.Toplevel], None]",
     *,
-    is_modal:bool):
+    is_modal:bool=False):
 
     """インスタンスの初期化を行います。
 
