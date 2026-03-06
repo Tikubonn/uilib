@@ -12,6 +12,20 @@ from .sub_window import SubWindow
 @unique
 class WorkerStatus (Enum):
 
+  """稼働・停止状態のワーカースレッドの動作状態を表現します。
+
+  Attributes
+  ----------
+  PENDING : Enum
+    ワーカースレッドは処理中である。
+  PAUSED : Enum
+    ワーカースレッドはダイアログによる回答待ち等の理由により一時停止状態である。
+  FAILED : Enum
+    ワーカースレッドはエラー等の理由により失敗した。
+  SUCCEED : Enum
+    ワーカースレッドは成功した。
+  """
+
   PENDING = auto()
   PAUSED = auto()
   FAILED = auto()
@@ -19,15 +33,24 @@ class WorkerStatus (Enum):
 
 class SubWindow_Worker (SubWindow):
 
+  """指定された処理に紐づいたサブウィンドウを実現します。
+
+  Attributes
+  ----------
+  _REFLESH_RATE : typing.ClassVar[int]
+    これは秘匿変数です。
+    1秒間の間に widget_update_func 関数によりウィジットが更新される回数を表します。
+  """
+
   _REFLESH_RATE:"typing.ClassVar[int]" = 60
 
   def __after_loop (self):
     match self.__worker_status:
       case WorkerStatus.PENDING:
         self.__widget_update_func()
-        self.__after_id = self.after(1000 // self._REFLESH_RATE, self.__after_loop)
+        self.__after_id = self.after(1000 // self._REFLESH_RATE, self.__after_loop) #self.after によるループを継続する。
       case WorkerStatus.PAUSED:
-        self.__after_id = self.after(1000 // self._REFLESH_RATE, self.__after_loop)
+        self.__after_id = self.after(1000 // self._REFLESH_RATE, self.__after_loop) #self.after によるループを継続する。
       case WorkerStatus.FAILED:
         self.__widget_failed_func()
         self.__thread.join()
@@ -75,18 +98,18 @@ class SubWindow_Worker (SubWindow):
   def __thread_setup (self):
     self.__thread = Thread(target=self.__thread_main)
     self.__thread.start()
-    atexit.register(self.__thread.join)
+    atexit.register(self.join) #最低でもアプリ終了時に後処理を行わせる
 
   def __on_destroy (self, event:"tkinter.Event"):
     match self.__worker_status:
-      case WorkerStatus.PENDING | WorkerStatus.PAUSED:
+      case WorkerStatus.PENDING | WorkerStatus.PAUSED: #途中中断ならば失敗として扱う
         self.__worker_status = WorkerStatus.FAILED
-      case WorkerStatus.FAILED | WorkerStatus.SUCCEED:
+      case WorkerStatus.FAILED | WorkerStatus.SUCCEED: #既に状態が決まっているならば何も行わない
         pass
       case _:
-        raise ValueError(self.__worker_status)
+        raise ValueError(self.__worker_status) #tmp.
     if self.__after_id:
-      self.after_cancel(self.__after_id)
+      self.after_cancel(self.__after_id) #self.after によるループが予約されているならば解除する。
 
   def __on_wm_delete_window (self):
     match self.__worker_status:
@@ -123,6 +146,50 @@ class SubWindow_Worker (SubWindow):
     language:"dict[str, str]|None"=None,
     is_modal:bool=False,
     pause_on_asking:bool=False):
+
+    """インスタンスの初期化を行います。
+
+    Parameters
+    ----------
+    master : tkinter.Widget
+      親となるウィジットです。
+    setup_func : typing.Callable[[tkinter.Toplevel], None]
+      初期化された本インスタンスの画面を作成する関数です。
+    update_func : typing.Callable[[], bool]
+      ワーカースレッドで繰り返し実行される関数です。
+      繰り返し実行を中断し、ワーカー処理を正常終了させるには、本関数の返り値に True を指定します。
+    failed_func : typing.Callable[[], None]|None
+      ワーカー処理が失敗したと判断された際に実行される関数です。
+      本関数はワーカースレッド内で実行されます。
+      本引数が未指定の場合 None が設定されます。
+    succeed_func : typing.Callable
+      ワーカー処理が成功したと判断された際に実行される関数です。
+      本関数はワーカースレッド内で実行されます。
+      本引数が未指定の場合 None が設定されます。
+    widget_update_func : typing.Callable[[], None]|None
+      メインスレッドで繰り返し実行される関数です。
+      本関数は作成されたサブウィンドウの画面を更新するために利用できます。
+    widget_failed_func : typing.Callable[[], None]|None
+      ワーカー処理が失敗した後で実行される関数です。
+      本関数はメインスレッド内で実行されます。
+      本関数はワーカー処理の実行結果をメッセージボックスで表示するなどの用途に利用することができます。
+      本引数が未指定の場合 None が設定されます。
+    widget_succeed_func : typing.Callable[[], None]|None
+      ワーカー処理が成功した後で実行される関数です。
+      本関数はメインスレッド内で実行されます。
+      本関数はワーカー処理の実行結果をメッセージボックスで表示するなどの用途に利用することができます。
+      本引数が未指定の場合 None が設定されます。
+    language : dict[str, str]|None
+      本インスタンスが表示するラベルの文章が記録された辞書オブジェクトです。
+      本引数が未指定の場合 None が設定されます。
+    is_modal : bool
+      True が指定されたならば本ウィンドウが閉じられるまで、親ウィンドウへの操作がロックされます。
+      本引数が未指定の場合 False が設定されます。
+    pause_on_asking : bool
+      True が指定されたならば本ウィンドウを閉じるかどうかを確認するダイアログが表示されている間、ワーカー処理を停止します。
+      本引数が未指定の場合 False が設定されます。
+    """
+
     super().__init__(master, setup_func, is_modal=is_modal)
     self.__update_func = update_func
     self.__failed_func = failed_func
@@ -142,7 +209,25 @@ class SubWindow_Worker (SubWindow):
 
   @property
   def _worker_status (self) -> WorkerStatus:
+
+    """現在のワーカースレッドの状態を取得します。
+
+    Notes
+    -----
+    本関数・変数は秘匿変数として定義されています。
+    そのためサブクラス以外からのアクセスは非推奨です。
+
+    Returns
+    -------
+    WorkerStatus
+      現在のワーカースレッドの状態です。
+    """
+
     return self.__worker_status
 
   def join (self):
+
+    """本インスタンスのワーカースレッドが終了するまで待機を行います。
+    """
+
     self.__thread.join()

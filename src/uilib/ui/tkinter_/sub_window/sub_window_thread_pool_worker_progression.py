@@ -12,6 +12,9 @@ class ThreadPoolError (Exception):
 
 class SubWindow_ThreadPoolWorkerProgression (SubWindow_WorkerProgression):
 
+  """並行処理の進行度を表示するワーカーウィンドウを実現します。
+  """
+
   def __exec_update_func (self, func:"typing.Callable[[], typing.Generator[float, None, None]]"):
     progressions = func()
     if isinstance(progressions, Generator):
@@ -70,6 +73,54 @@ class SubWindow_ThreadPoolWorkerProgression (SubWindow_WorkerProgression):
     language:"dict[str, str]|None"=None,
     is_modal:bool=False,
     pause_on_asking:bool=False):
+
+    """インスタンスの初期化を行います。
+
+    Notes
+    -----
+    各引数は update_funcs 引数を除いて SubWindow_WorkerProgression と同じです。
+
+    Parameters
+    ----------
+    master : tkinter.Widget
+      親となるウィジットです。
+    title : str
+      本ウィンドウに表示されるタイトル名です。
+    message : str
+      本ウィンドウのプログレスバー上部に表示される文章です。
+    update_funcs : list[typing.Callable[[], typing.Generator[float, None, None]]]
+      ワーカースレッドで1度限り実行される関数の集合です。
+      本引数内の関数は concurrent.futures.ThreadPoolExecutor により並行実行されます。
+      本クラスは、各関数から返されたジェネレータの各値から、現在の進行度を計算し、画面に表示します。
+    failed_func : typing.Callable[[], None]|None
+      ワーカー処理が失敗したと判断された際に実行される関数です。
+      本関数はワーカースレッド内で実行されます。
+      本引数が未指定の場合 None が設定されます。
+    succeed_func : typing.Callable
+      ワーカー処理が成功したと判断された際に実行される関数です。
+      本関数はワーカースレッド内で実行されます。
+      本引数が未指定の場合 None が設定されます。
+    widget_failed_func : typing.Callable[[], None]|None
+      ワーカー処理が失敗した後で実行される関数です。
+      本関数はメインスレッド内で実行されます。
+      本関数はワーカー処理の実行結果をメッセージボックスで表示するなどの用途に利用することができます。
+      本引数が未指定の場合 None が設定されます。
+    widget_succeed_func : typing.Callable[[], None]|None
+      ワーカー処理が成功した後で実行される関数です。
+      本関数はメインスレッド内で実行されます。
+      本関数はワーカー処理の実行結果をメッセージボックスで表示するなどの用途に利用することができます。
+      本引数が未指定の場合 None が設定されます。
+    language : dict[str, str]|None
+      本インスタンスが表示するラベルの文章が記録された辞書オブジェクトです。
+      本引数が未指定の場合 None が設定されます。
+    is_modal : bool
+      True が指定されたならば本ウィンドウが閉じられるまで、親ウィンドウへの操作がロックされます。
+      本引数が未指定の場合 False が設定されます。
+    pause_on_asking : bool
+      True が指定されたならば本ウィンドウを閉じるかどうかを確認するダイアログが表示されている間、ワーカー処理を停止します。
+      本引数が未指定の場合 False が設定されます。
+    """
+
     self.__update_funcs = update_funcs
     self.__progression_table = {
       func: 0.0 for func in update_funcs
@@ -93,4 +144,4 @@ class SubWindow_ThreadPoolWorkerProgression (SubWindow_WorkerProgression):
   def join (self):
     if self.__executor:
       self.__executor.shutdown(wait=True)
-    super().join()
+    super().join() #ThreadPoolExecutor の待機後に親クラスの待機処理に移行します。
