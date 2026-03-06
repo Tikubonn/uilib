@@ -3,33 +3,28 @@ import time
 import uilib
 import tkinter
 import tkinter.ttk
+from dataclasses import dataclass
 
-def setup_func (master:"tkinter.Widget"):
-  label = tkinter.ttk.Label(master, text="Sample")
-  label.pack(
-    padx=uilib.const_.PADDING_L, 
-    pady=uilib.const_.PADDING_L
-  )
+@dataclass(frozen=True)
+class Sleep:
 
-def update_func () -> bool:
-  global should_repeat_var
-  global should_raise_error_var
-  if should_raise_error_var.get():
-    print("Update: Should raise error!")
-    raise Exception()
-  else:
-    print("Update!")
-    time.sleep(1)
-    return not should_repeat_var.get()
+  duration:int
+
+  def __call__ (self):
+    global should_raise_error_var
+    if should_raise_error_var.get():
+      raise ValueError()
+    else:
+      for i in range(self.duration):
+        print("Update: {:d}/{:d}".format(i + 1, self.duration))
+        yield (i + 1) / self.duration
+        time.sleep(1)
 
 def failed_func ():
   print("Failed!")
 
 def succeed_func ():
   print("Succeed!")
-
-def widget_update_func ():
-  print("Widget update!")
 
 def widget_failed_func ():
   print("Widget failed!")
@@ -41,13 +36,13 @@ def on_pressed ():
   global tk
   global is_modal_var
   global pause_on_asking_var
-  modal = uilib.ui.tkinter_.sub_window.SubWindow_Worker(
+  modal = uilib.ui.tkinter_.sub_window.SubWindow_ThreadPoolWorkerProgression(
     tk, 
-    setup_func,
-    update_func=update_func,
+    "Sample title",
+    "Sample message",
+    update_funcs=[Sleep(i) for i in range(3, 6)],
     failed_func=failed_func,
     succeed_func=succeed_func,
-    widget_update_func=widget_update_func,
     widget_failed_func=widget_failed_func,
     widget_succeed_func=widget_succeed_func,
     is_modal=is_modal_var.get(),
@@ -61,12 +56,9 @@ base_frame.pack(
   padx=uilib.const_.PADDING_L, 
   pady=uilib.const_.PADDING_L
 )
-should_repeat_var = tkinter.IntVar(value=0)
-should_repeat_checkbutton = tkinter.ttk.Checkbutton(base_frame, text="shoud repeat?", variable=should_repeat_var)
-should_repeat_checkbutton.pack()
 should_raise_error_var = tkinter.IntVar(value=0)
 should_raise_error_checkbutton = tkinter.ttk.Checkbutton(base_frame, text="shoud raise error?", variable=should_raise_error_var)
-should_raise_error_checkbutton.pack(pady=(uilib.const_.PADDING, 0))
+should_raise_error_checkbutton.pack()
 is_modal_var = tkinter.IntVar(value=0)
 is_modal_checkbutton = tkinter.ttk.Checkbutton(base_frame, text="is modal?", variable=is_modal_var)
 is_modal_checkbutton.pack(pady=(uilib.const_.PADDING, 0))

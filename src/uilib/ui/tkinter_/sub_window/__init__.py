@@ -1,3 +1,5 @@
 
 from .sub_window import SubWindow
 from .sub_window_worker import SubWindow_Worker
+from .sub_window_worker_progression import SubWindow_WorkerProgression
+from .sub_window_thread_pool_worker_progression import SubWindow_ThreadPoolWorkerProgression

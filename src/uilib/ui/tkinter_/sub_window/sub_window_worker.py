@@ -1,70 +1,148 @@
 
+import atexit
 import tkinter
 import tkinter.messagebox
+import traceback
 from uilib import global_
 from uilib import language
+from enum import Enum, auto, unique
 from threading import Thread
 from .sub_window import SubWindow
 
+@unique
+class WorkerStatus (Enum):
+
+  PENDING = auto()
+  PAUSED = auto()
+  FAILED = auto()
+  SUCCEED = auto()
+
 class SubWindow_Worker (SubWindow):
 
-  """背後で処理を行うサブウィンドウを実現します。
-  """
+  _REFLESH_RATE:"typing.ClassVar[int]" = 60
 
-  def _thread_main (self):
-    while self.should_continue:
-      try:
-        self.update_func()
-      except:
-        traceback.print_exc()
-    if self.exit_func:
-      self.exit_func()
+  def __after_loop (self):
+    match self.__worker_status:
+      case WorkerStatus.PENDING:
+        self.__widget_update_func()
+        self.__after_id = self.after(1000 // self._REFLESH_RATE, self.__after_loop)
+      case WorkerStatus.PAUSED:
+        self.__after_id = self.after(1000 // self._REFLESH_RATE, self.__after_loop)
+      case WorkerStatus.FAILED:
+        self.__widget_failed_func()
+        self.__thread.join()
+        self.destroy()
+      case WorkerStatus.SUCCEED:
+        self.__widget_succeed_func()
+        self.__thread.join()
+        self.destroy()
+      case _:
+        raise ValueError(self.__worker_status) #tmp.
 
-  def _on_destroied (self, event:"tkinter.Event"):
-    self.should_continue = False
-    self.thread.join()
+  def __thread_main (self):
+    while True:
+      match self.__worker_status:
+        case WorkerStatus.PENDING:
+          try:
+            was_satisfied = self.__update_func()
+            if was_satisfied:
+              match self.__worker_status:
+                case WorkerStatus.PENDING | WorkerStatus.PAUSED:
+                  self.__worker_status = WorkerStatus.SUCCEED
+                case WorkerStatus.FAILED | WorkerStatus.SUCCEED:
+                  pass
+                case _:
+                  raise ValueError(self.__worker_status)
+          except:
+            self.__worker_status = WorkerStatus.FAILED
+            traceback.print_exc() #test.
+        case WorkerStatus.PAUSED:
+          pass
+        case WorkerStatus.FAILED | WorkerStatus.SUCCEED:
+          break
+        case _:
+          raise ValueError(self.__worker_status) #tmp.
+    match self.__worker_status:
+      case WorkerStatus.FAILED:
+        if self.__failed_func:
+          self.__failed_func()
+      case WorkerStatus.SUCCEED:
+        if self.__succeed_func:
+          self.__succeed_func()
+      case _:
+        raise ValueError(self.__worker_status) #tmp.
 
-  def _on_wm_delete_window (self):
-    answer = tkinter.messagebox.askyesno(
-      language.translate("DIALOG_WORKER_ABORT_CONFIRMATION_TITLE", self.language),
-      language.translate("DIALOG_WORKER_ABORT_CONFIRMATION", self.language)
-    )
-    if answer:
-      self.destroy()
+  def __thread_setup (self):
+    self.__thread = Thread(target=self.__thread_main)
+    self.__thread.start()
+    atexit.register(self.__thread.join)
+
+  def __on_destroy (self, event:"tkinter.Event"):
+    match self.__worker_status:
+      case WorkerStatus.PENDING | WorkerStatus.PAUSED:
+        self.__worker_status = WorkerStatus.FAILED
+      case WorkerStatus.FAILED | WorkerStatus.SUCCEED:
+        pass
+      case _:
+        raise ValueError(self.__worker_status)
+    if self.__after_id:
+      self.after_cancel(self.__after_id)
+
+  def __on_wm_delete_window (self):
+    match self.__worker_status:
+      case WorkerStatus.PENDING:
+        if self.__pause_on_asking:
+          self.__worker_status = WorkerStatus.PAUSED
+        try:
+          answer = tkinter.messagebox.askyesno(
+            language.translate("DIALOG_WORKER_ABORT_CONFIRMATION_TITLE", self.__language),
+            language.translate("DIALOG_WORKER_ABORT_CONFIRMATION", self.__language)
+          )
+          if answer:
+            self.destroy()
+        finally:
+          match self.__worker_status:
+            case WorkerStatus.PAUSED:
+              self.__worker_status = WorkerStatus.PENDING
+            case WorkerStatus.PENDING | WorkerStatus.FAILED | WorkerStatus.SUCCEED:
+              pass
+            case _:
+              raise ValueError(self.__worker_status)
 
   def __init__ (
-    self, 
-    master:"tkinter.Widget", 
-    setup_func:"typing.Callable[[tkinter.Widget], None]",
-    update_func:"typing.Callable[[], None]",
-    exit_func:"typing.Callable[[], None]|None"=None,
+    self,
+    master:"tkinter.Widget",
+    setup_func:"typing.Callable[[tkinter.Toplevel], None]",
     *,
-    language:"dict[str, str]|None"=None):
+    update_func:"typing.Callable[[], bool]",
+    failed_func:"typing.Callable[[], None]|None"=None,
+    succeed_func:"typing.Callable[[], None]|None"=None,
+    widget_update_func:"typing.Callable[[], None]|None"=None,
+    widget_failed_func:"typing.Callable[[], None]|None"=None,
+    widget_succeed_func:"typing.Callable[[], None]|None"=None,
+    language:"dict[str, str]|None"=None,
+    is_modal:bool=False,
+    pause_on_asking:bool=False):
+    super().__init__(master, setup_func, is_modal=is_modal)
+    self.__update_func = update_func
+    self.__failed_func = failed_func
+    self.__succeed_func = succeed_func
+    self.__widget_update_func = widget_update_func
+    self.__widget_failed_func = widget_failed_func
+    self.__widget_succeed_func = widget_succeed_func
+    self.__language = language or global_.DEFAULT_LANGUAGE
+    self.__pause_on_asking = pause_on_asking
+    self.__worker_status = WorkerStatus.PENDING
+    self.__after_id = ""
+    self.__thread = None
+    self.__after_loop()
+    self.__thread_setup()
+    self.bind("<Destroy>", self.__on_destroy)
+    self.protocol("WM_DELETE_WINDOW", self.__on_wm_delete_window)
 
-    """インスタンスの初期化を行います。
+  @property
+  def _worker_status (self) -> WorkerStatus:
+    return self.__worker_status
 
-    Parameters
-    ----------
-    master : tkinter.Widget
-      親となる tkinter ウィジットオブジェクトです。
-    setup_func : typing.Callable[[tkinter.Widget], None]
-      作成される tkinter.Toplevel オブジェクトの初期化を行う関数です。
-    update_func : typing.Callable[[], None]
-      サブウィンドウの背景で継続して処理される関数です。
-    exit_func : typing.Callable[[], None]
-      サブウィンドウと update_func が終了する際に呼び出される関数です。
-      未指定ならば None が設定されます。
-    language : dict[str, str]|None
-      幾つかの文章を表示する際に参照される辞書オブジェクトです。
-      未指定ならば None が設定されます。
-    """
-
-    super().__init__(master, setup_func)
-    self.update_func = update_func
-    self.exit_func = exit_func
-    self.language = language or global_.DEFAULT_LANGUAGE
-    self.should_continue = True
-    self.thread = Thread(target=self._thread_main)
-    self.thread.start()
-    self.bind("<Destroy>", self._on_destroied)
-    self.protocol("WM_DELETE_WINDOW", self._on_wm_delete_window)
+  def join (self):
+    self.__thread.join()
