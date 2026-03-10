@@ -87,6 +87,8 @@ tk.mainloop()
 | リスト | `uilib.ui.value.UI_List` | 任意個数のデータを表現します。GUI経由による要素の追加・編集・削除が可能です。 |
 | 辞書 | `uilib.ui.value.UI_Dict` | 任意個数のデータを表現します。GUI経由による要素の追加・編集・削除が可能です。 |
 | 辞書 | `uilib.ui.value.UI_HardDict` | `dataclasses.dataclass` のように固定された要素をもつデータ構造を表現します。 |
+| 選択肢 | `uilib.ui.value.UI_Choices` | 複数ある任意のデータの中から1つを選択します。 |
+| inet アドレス | `uilib.ui.value.UI_InetAddress` | IPアドレス・ポート番号の組を表現します。 |
 
 ### レイアウト向けウィジット
 
@@ -99,7 +101,6 @@ tk.mainloop()
 | トグルボックス | `uilib.ui.layout.UI_Toggle` | |
 | レイアウト | `uilib.ui.layout.UI_Layout` | グリッドレイアウトを提供します。各セルごとに列幅・行幅・揃えを指定することができます。 |
 | 名前付きレイアウト | `uilib.ui.layout.UI_Group` | グリッドレイアウトを提供します。各セルごとに列幅・行幅・揃えを指定することができます。 |
-| ユーザ定義ウィジット | `uilib.ui.layout.UI_UserDef` | 初期化時に各種関数を指定して使い捨てのウィジットを作成します。 `uilib.ui.abc.IUI` を継承したクラスを別途定義するのが面倒な場合に活用できます。 |
 
 ## Install
 
