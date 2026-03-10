@@ -5,22 +5,22 @@ import tkinter.ttk
 
 tk = tkinter.Tk()
 tk.title("Sample window")
-tk.geometry("640x480")
-ints = [uilib.ui.value.UI_Int(i, (0, 100, 1)) for i in range(9)]
 ui_layout = uilib.ui.layout.UI_Group(
-  "Int values",
+  "Sample ints",
   [
-    [ints[0], ints[1], ints[2]], 
-    [(ints[3], 2), (ints[4], 1)], 
-    [(ints[5], 3, 1, tkinter.E)]], 
-  {
-    "int0": ints[0],
-    "int1": ints[1],
-    "int2": ints[2],
-    "int3": ints[3],
-    "int4": ints[4],
-    "int5": ints[5],
-  }
+    [
+      (uilib.ui.value.UI_Int(0), "int0"),
+      (uilib.ui.value.UI_Int(1), "int1"),
+      (uilib.ui.value.UI_Int(2), "int2"),
+    ],
+    [
+      (uilib.ui.value.UI_Int(3), "int3", 2),
+      (uilib.ui.value.UI_Int(4), "int4"),
+    ],
+    [
+      (uilib.ui.value.UI_Int(5), "int5", 3, 1, tkinter.E)
+    ]
+  ]
 )
 ui_layout.build(tk).pack(padx=10, pady=10)
 button_frame = tkinter.ttk.Frame(tk)
