@@ -87,7 +87,8 @@ class UI_Path (IUI):
     entry = tkinter.ttk.Entry(
       base_frame, 
       textvariable=self.str_var, 
-      state=tkinter.DISABLED
+      state=tkinter.DISABLED,
+      width=const_.TEXT_FORM_WIDTH
     )
     entry.grid(column=0, row=0, sticky=tkinter.EW)
     search_button = tkinter.ttk.Button(

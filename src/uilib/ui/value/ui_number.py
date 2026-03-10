@@ -1,6 +1,7 @@
 
 import tkinter
 import tkinter.ttk
+from uilib import const_
 from uilib.ui.abc import IUI
 
 class _UI_Number (IUI):
@@ -31,17 +32,25 @@ class _UI_Number (IUI):
         to=max_, 
         increment=step, 
         textvariable=self.var,
-        command=self._on_changed
+        command=self._on_changed,
+        width=const_.NUMERIC_FORM_WIDTH
       )
-      spinbox.pack(fill=tkinter.X)
+      spinbox.grid(column=0, row=0, sticky=tkinter.EW)
       spinbox.bind("<FocusOut>", self._on_changed)
       spinbox.bind("<Return>", self._on_changed)
+      range_label = tkinter.ttk.Label(
+        base_frame, 
+        text="[{:d}~{:d}]".format(min_, max_),
+        foreground=const_.TEXT_OPTIONAL_INFO_COLOR
+      )
+      range_label.grid(column=1, row=0, sticky=tkinter.W, padx=(const_.PADDING, 0))
     else:
       entry = tkinter.ttk.Entry(
         base_frame, 
-        textvariable=self.var
+        textvariable=self.var,
+        width=const_.NUMERIC_FORM_WIDTH
       )
-      entry.pack(fill=tkinter.X)
+      entry.grid(column=0, row=0, sticky=tkinter.EW)
       entry.bind("<FocusOut>", self._on_changed)
       entry.bind("<Return>", self._on_changed)
     return base_frame

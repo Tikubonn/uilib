@@ -1,6 +1,7 @@
 
 import tkinter
 import tkinter.ttk
+from uilib import const_
 from uilib.ui.abc import IUI
 from collections import OrderedDict
 
@@ -38,7 +39,8 @@ class UI_Choices (IUI):
       master,
       textvariable=self.var,
       values=list(self.value_table.keys()),
-      state="readonly"
+      state="readonly",
+      width=const_.TEXT_FORM_WIDTH
     )
     combobox.bind("<<ComboboxSelected>>", self._on_combobox_change)
     return combobox

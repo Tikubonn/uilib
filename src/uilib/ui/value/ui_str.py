@@ -1,6 +1,7 @@
 
 import tkinter
 import tkinter.ttk
+from uilib import const_
 from uilib.ui.abc import IUI
 
 class UI_Str (IUI):
@@ -22,7 +23,8 @@ class UI_Str (IUI):
     base_frame = tkinter.ttk.Frame(master)
     entry = tkinter.ttk.Entry(
       base_frame, 
-      textvariable=self.str_var
+      textvariable=self.str_var,
+      width=const_.TEXT_FORM_WIDTH
     )
     entry.pack(fill=tkinter.X)
     entry.bind("<FocusOut>", self._on_changed)

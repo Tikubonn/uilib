@@ -171,7 +171,8 @@ class UI_Dict (IUI):
     entry = tkinter.ttk.Entry(
       inner_frame, 
       textvariable=self.entry_var, 
-      state=tkinter.DISABLED
+      state=tkinter.DISABLED,
+      width=const_.TEXT_FORM_WIDTH
     )
     entry.grid(column=0, row=0, sticky=tkinter.EW, padx=(0, const_.PADDING))
     add_button = tkinter.ttk.Button(

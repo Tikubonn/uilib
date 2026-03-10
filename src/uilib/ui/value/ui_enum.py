@@ -40,7 +40,8 @@ class UI_Enum (IUI):
       master, 
       values=list(self.enum_table.keys()),
       textvariable=self.var,
-      state="readonly"
+      state="readonly",
+      width=const_.TEXT_FORM_WIDTH
     )
     combobox.bind("<<ComboboxSelected>>", self._on_combobox_selected)
     return combobox
