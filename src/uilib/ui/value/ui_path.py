@@ -24,6 +24,7 @@ class UI_Path (IUI):
     self, 
     value:str, 
     type_:PathType,
+    *,
     file_types:list[tuple[str, str]]=[],
     readonly:bool=False,
     callback:"typing.Callable[[str], None]|None"=None):

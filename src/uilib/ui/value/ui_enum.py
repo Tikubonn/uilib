@@ -18,6 +18,7 @@ class UI_Enum (IUI):
     self, 
     value:"enum.Enum", 
     type_:"typing.Type[enum.Enum]", 
+    *,
     label_table:"dict[enum.Enum, str]"={},
     readonly:bool=False,
     callback:"typing.Callable[[enum.Enum], None]|None"=None):

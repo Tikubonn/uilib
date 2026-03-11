@@ -17,6 +17,7 @@ class UI_Choices (IUI):
     self, 
     initial_value:"typing.Any",
     values:"list[typing.Any]",
+    *,
     readonly:bool=False,
     calc_key_func:"typing.Callable[[typing.Any], str]"=str,
     callback:"typing.Callable[[typing.Any], None]|None"=None):

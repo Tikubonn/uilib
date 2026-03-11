@@ -20,6 +20,7 @@ class UI_Flag (IUI):
     self, 
     value:"enum.Flag", 
     type_:"typing.Type[enum.Flag]", 
+    *,
     label_table:"dict[enum.Flag, str]"={},
     readonly:bool=False,
     callback:"typing.Callable[[enum.Flag], None]|None"=None):

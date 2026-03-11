@@ -14,6 +14,7 @@ class UI_Str (IUI):
   def __init__ (
     self, 
     value:str, 
+    *,
     readonly:bool=False,
     callback:"typing.Callable[[str], None]|None"=None):
     self.readonly = readonly

@@ -13,6 +13,7 @@ class _UI_Number (IUI):
     self, 
     var:"tkinter.Variable", 
     value_range_step:"tuple[typing.Any, typing.Any, typing.Any]|None"=None,
+    *,
     side_label_format:str="{!r}~{!r}",
     readonly:bool=False,
     callback:"typing.Callable[[typing.Any], None]|None"=None):
@@ -87,6 +88,7 @@ class UI_Int (IUI):
     self, 
     value:int, 
     value_range_step:tuple[int, int, int]|None=None,
+    *,
     readonly:bool=False,
     callback:"typing.Callable[[int], None]|None"=None):
     var = tkinter.IntVar(value=value)
@@ -121,6 +123,7 @@ class UI_Float (IUI):
     self, 
     value:float, 
     value_range_step:tuple[float, float, float]|None=None,
+    *,
     readonly:bool=False,
     callback:"typing.Callable[[float], None]|None"=None):
     var = tkinter.DoubleVar(value=value)

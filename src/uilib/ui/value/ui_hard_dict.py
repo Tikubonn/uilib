@@ -12,6 +12,7 @@ class UI_HardDict (IUI):
   def __init__ (
     self, 
     uis:dict[str, IUI], 
+    *,
     label_table:dict[str, str]={}):
     self.uis = OrderedDict(uis)
     self.label_table = label_table

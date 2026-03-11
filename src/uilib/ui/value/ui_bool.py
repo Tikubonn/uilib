@@ -14,6 +14,7 @@ class UI_Bool (IUI):
   def __init__ (
     self, 
     value:bool, 
+    *,
     readonly:bool=False,
     callback:"typing.Callable[[bool], None]|None"=None):
     self.readonly = readonly
