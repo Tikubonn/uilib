@@ -84,8 +84,8 @@ class UI_Path (IUI):
 
     #Load icons.
 
-    self.icon_search = image_set.get_image("icon-search", (12, 12))
-    self.icon_delete = image_set.get_image("icon-delete", (12, 12))
+    self.icon_search = image_set.get_image("image/icon/search.png", (12, 12))
+    self.icon_delete = image_set.get_image("image/icon/delete.png", (12, 12))
 
     #Main
 

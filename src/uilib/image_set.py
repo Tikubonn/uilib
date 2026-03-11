@@ -1,39 +1,19 @@
 
 import importlib.resources
 from PIL import Image, ImageTk
+from pathlib import Path
 
-"""uilib で使用される画像データの管理を行うモジュールです。"""
-
-_module_dir:"pathlib.Path" = importlib.resources.files(__name__)
-
-_PIL_IMAGES:"dict[str, PIL.Image]" = {
-  "icon-add": Image.open(_module_dir.joinpath("static/image/icon/add.png")),
-  "icon-delete": Image.open(_module_dir.joinpath("static/image/icon/delete.png")),
-  "icon-edit": Image.open(_module_dir.joinpath("static/image/icon/edit.png")),
-  "icon-move-up": Image.open(_module_dir.joinpath("static/image/icon/move-up.png")),
-  "icon-move-down": Image.open(_module_dir.joinpath("static/image/icon/move-down.png")),
-  "icon-search": Image.open(_module_dir.joinpath("static/image/icon/search.png")),
-}
-
-def get_image (id_:str, expect_size:tuple[int, int]|None=None) -> "tkinter.PhotoImage":
-
-  """指定された画像を tkinter.PhotoImage 形式で取得します。
-
-  Parameters
-  ----------
-  id_ : str
-    取得する画像の ID 名です。
-  expect_size : tuple[int, int]
-    取得する画像の望ましいサイズです。
-    画像サイズが本サイズを超過する場合には自動的にリサイズを行います。
-
-  Returns
-  -------
-  tkinter.PhotoImage
-    適切にリサイズされた tkinter.PhotoImage 形式の画像オブジェクトです。
-  """
-
-  image = _PIL_IMAGES[id_].copy()
-  if expect_size:
-    image.thumbnail(expect_size)
-  return ImageTk.PhotoImage(image=image)
+def get_image (path:"pathlib.Path|str", expect_size:tuple[int, int]|None=None):
+  module_dir = importlib.resources.files(__name__)
+  path_candidates = [
+    module_dir.joinpath("static", path),
+    Path(path)
+  ]
+  for path_candidate in path_candidates:
+    if path_candidate.exists():
+      image = Image.open(path_candidate)
+      if expect_size:
+        image.thumbnail(expect_size)
+      return ImageTk.PhotoImage(image=image)
+  else:
+    raise FileNotFoundError(path_candidates) #tmp.

@@ -155,10 +155,10 @@ class UI_List (IUI):
 
     #Load icons.
 
-    self.icon_add = image_set.get_image("icon-add", (12, 12))
-    self.icon_move_up = image_set.get_image("icon-move-up", (12, 12))
-    self.icon_move_down = image_set.get_image("icon-move-down", (12, 12))
-    self.icon_delete = image_set.get_image("icon-delete", (12, 12))
+    self.icon_add = image_set.get_image("image/icon/add.png", (12, 12))
+    self.icon_move_up = image_set.get_image("image/icon/move-up.png", (12, 12))
+    self.icon_move_down = image_set.get_image("image/icon/move-down.png", (12, 12))
+    self.icon_delete = image_set.get_image("image/icon/delete.png", (12, 12))
 
     #main
 

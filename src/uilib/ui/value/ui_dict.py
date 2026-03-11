@@ -159,9 +159,9 @@ class UI_Dict (IUI):
 
     #Load icons.
 
-    self.icon_add = image_set.get_image("icon-add", (12, 12))
-    self.icon_edit = image_set.get_image("icon-edit", (12, 12))
-    self.icon_delete = image_set.get_image("icon-delete", (12, 12))
+    self.icon_add = image_set.get_image("image/icon/add.png", (12, 12))
+    self.icon_edit = image_set.get_image("image/icon/edit.png", (12, 12))
+    self.icon_delete = image_set.get_image("image/icon/delete.png", (12, 12))
 
     #Main
 
