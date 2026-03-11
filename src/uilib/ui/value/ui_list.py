@@ -48,6 +48,10 @@ class UI_List (IUI):
     self.callback = callback
     self.content_outer_frame = None
     self.content_frame = None
+    self.icon_add = None
+    self.icon_move_up = None
+    self.icon_move_down = None
+    self.icon_delete = None
 
   def _can_move_up (self, index:int) -> bool:
     return 0 < index and index < len(self.uis)
@@ -108,7 +112,7 @@ class UI_List (IUI):
         up_button_state = tkinter.DISABLED
       up_button = tkinter.ttk.Button(
         content_frame, 
-        image=image_set.get_image("icon-move-up", (12, 12)), 
+        image=self.icon_move_up,
         command=handler_set.move_up, 
         state=up_button_state
       )
@@ -119,7 +123,7 @@ class UI_List (IUI):
         down_button_state = tkinter.DISABLED
       down_button = tkinter.ttk.Button(
         content_frame, 
-        image=image_set.get_image("icon-move-down", (12, 12)), 
+        image=self.icon_move_down,
         command=handler_set.move_down, 
         state=down_button_state
       )
@@ -128,7 +132,7 @@ class UI_List (IUI):
       built.grid(column=2, row=i * 2 + 1, padx=const_.PADDING_L)
       delete_button = tkinter.ttk.Button(
         content_frame, 
-        image=image_set.get_image("icon-delete", (12, 12)), 
+        image=self.icon_delete,
         command=handler_set.delete
       )
       delete_button.grid(column=3, row=i * 2 + 1, sticky=tkinter.N)
@@ -147,6 +151,16 @@ class UI_List (IUI):
     self._rebuild()
 
   def build (self, master:tkinter.Widget) -> tkinter.Widget:
+
+    #Load icons.
+
+    self.icon_add = image_set.get_image("icon-add", (12, 12))
+    self.icon_move_up = image_set.get_image("icon-move-up", (12, 12))
+    self.icon_move_down = image_set.get_image("icon-move-down", (12, 12))
+    self.icon_delete = image_set.get_image("icon-delete", (12, 12))
+
+    #main
+
     base_frame = tkinter.ttk.Frame(master, relief=tkinter.GROOVE)
     inner_frame = tkinter.ttk.Frame(base_frame)
     inner_frame.pack(fill=tkinter.X, padx=const_.PADDING_L, pady=const_.PADDING_L)
@@ -154,7 +168,7 @@ class UI_List (IUI):
     button_frame.pack(fill=tkinter.X)
     add_button = tkinter.ttk.Button(
       button_frame, 
-      image=image_set.get_image("icon-add", (12, 12)), 
+      image=self.icon_add,
       command=self._on_pressed_add
     )
     add_button.pack(side=tkinter.RIGHT)
