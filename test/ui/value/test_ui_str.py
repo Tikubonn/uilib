@@ -15,7 +15,7 @@ def test_ui_str (test_toplevel):
   with pytest.raises(ValueError):
     ui_str.load_from_param(None)
 
-def test_ui_str (test_toplevel):
+def test_ui_str_readonly (test_toplevel):
   ui_str = uilib.ui.value.UI_Str("abc", readonly=True)
   built = ui_str.build(test_toplevel)
   built.pack(fill=tkinter.X)

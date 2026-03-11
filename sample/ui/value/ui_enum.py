@@ -24,7 +24,7 @@ tk = tkinter.Tk()
 ui = uilib.ui.value.UI_Enum(
   SampleEnum.A, 
   SampleEnum, 
-  {
+  label_table={
     SampleEnum.A: "Switch to A", 
     SampleEnum.B: "Switch to B", 
     SampleEnum.C: "Switch to C"
@@ -35,7 +35,7 @@ ui.build(tk).pack(padx=10, pady=(10, 0))
 ui_readonly = uilib.ui.value.UI_Enum(
   SampleEnum.A, 
   SampleEnum, 
-  {
+  label_table={
     SampleEnum.A: "Switch to A", 
     SampleEnum.B: "Switch to B", 
     SampleEnum.C: "Switch to C"

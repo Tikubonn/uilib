@@ -9,7 +9,7 @@ ui = uilib.ui.value.UI_HardDict(
     "name": uilib.ui.value.UI_Str("abc"),
     "age": uilib.ui.value.UI_Int(12, (0, 100, 1))
   },
-  {
+  label_table={
     "name": "名前",
     "age": "年齢"
   }

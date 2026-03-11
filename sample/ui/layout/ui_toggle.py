@@ -12,7 +12,7 @@ ui_nullable = uilib.ui.layout.UI_Toggle(
       "name": uilib.ui.value.UI_Str(""),
       "age": uilib.ui.value.UI_Int(0),
     },
-    {
+    label_table={
       "name": "名前",
       "age": "年齢"
     }
