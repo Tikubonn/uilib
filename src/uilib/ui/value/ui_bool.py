@@ -8,7 +8,7 @@ _LOGGER:logging.Logger = logging.getLogger(__name__)
 
 class UI_Bool (IUI):
 
-  """真偽値を表現する uilib.ui.abc.IUI オブジェクトです。
+  """真偽値を表現する UI を提供します。
   """
 
   def __init__ (

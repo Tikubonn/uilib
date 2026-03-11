@@ -18,7 +18,8 @@ class PathType (Enum):
 
 class UI_Path (IUI):
 
-  """ファイルパスを表現する uilib.ui.abc.IUI オブジェクトです。"""
+  """ファイルパスを表現する UI を提供します。
+  """
 
   def __init__ (
     self, 

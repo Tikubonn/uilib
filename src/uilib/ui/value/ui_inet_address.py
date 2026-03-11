@@ -18,6 +18,9 @@ from uilib.ui.value.ui_number import UI_Int
 
 class UI_InetAddress (IUI):
 
+  """IP アドレスを表現する UI を提供します。
+  """
+
   def _on_changed (self):
     if self.callback:
       self.callback(self.get_value())

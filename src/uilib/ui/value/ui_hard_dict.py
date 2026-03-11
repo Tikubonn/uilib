@@ -7,18 +7,21 @@ from collections import OrderedDict
 
 class UI_HardDict (IUI):
 
-  """固定された要素をもつ辞書を表現する uilib.ui.abc.IUI オブジェクトです。"""
+  """固定された要素をもつ辞書を表現する UI を提供します。
+  """
 
   def __init__ (
     self, 
-    uis:dict[str, IUI], 
+    uis:dict[str, IUI]|list[tuple[str, IUI]], 
     *,
     label_table:dict[str, str]={}):
     self.uis = OrderedDict(uis)
     self.label_table = label_table
 
-  def get_value (self) -> "dict[str, uilib.ui.abc.IUI]":
-    return {k: ui.get_value() for k, ui in self.uis.items()}
+  def get_value (self) -> "dict[str, typing.Any]":
+    return {
+      key: ui.get_value() for key, ui in self.uis.items()
+    }
 
   def build (self, master:"tkinter.Widget") -> "tkinter.Widget":
     base_frame = tkinter.ttk.Frame(master)
@@ -42,4 +45,6 @@ class UI_HardDict (IUI):
       raise ValueError(param) #tmp.
 
   def save_as_param (self) -> "dict[str, typing.Any]":
-    return OrderedDict(((key, ui.save_as_param()) for key, ui in self.uis.items()))
+    return {
+      key: ui.save_as_param() for key, ui in self.uis.items()
+    }

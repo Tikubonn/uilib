@@ -35,7 +35,8 @@ class _HandlerSet:
 
 class UI_List (IUI):
 
-  """任意長のリストを表現する uilib.ui.abc.IUI オブジェクトです。"""
+  """任意長のリストを表現する UI を提供します。
+  """
 
   def __init__ (
     self, 

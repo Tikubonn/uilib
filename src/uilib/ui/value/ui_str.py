@@ -9,7 +9,8 @@ _LOGGER:logging.Logger = logging.getLogger(__name__)
 
 class UI_Str (IUI):
 
-  """任意の文字列を表現する uilib.ui.abc.IUI オブジェクトです。"""
+  """任意の文字列を表現する UI を提供します。
+  """
 
   def __init__ (
     self, 

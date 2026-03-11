@@ -12,7 +12,8 @@ _LOGGER:logging.Logger = logging.getLogger(__name__)
 
 class UI_Enum (IUI):
 
-  """列挙型を表現する uilib.ui.abc.IUI オブジェクトです。"""
+  """列挙型を表現する UI を提供します。
+  """
 
   def __init__ (
     self, 

@@ -14,7 +14,8 @@ _LOGGER:logging.Logger = logging.getLogger(__name__)
 
 class UI_Flag (IUI):
 
-  """列挙型(enum.Flag)を表現する uilib.ui.abc.IUI オブジェクトです。"""
+  """列挙型(enum.Flag)を表現する UI を提供します。
+  """
 
   def __init__ (
     self, 

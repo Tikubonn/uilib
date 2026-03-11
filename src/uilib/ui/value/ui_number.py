@@ -9,6 +9,9 @@ _LOGGER:logging.Logger = logging.getLogger(__name__)
 
 class _UI_Number (IUI):
 
+  """任意の数値を表現する UI を提供します。
+  """
+
   def __init__ (
     self, 
     var:"tkinter.Variable", 
@@ -82,7 +85,8 @@ class _UI_Number (IUI):
 
 class UI_Int (IUI):
 
-  """整数を表現する uilib.ui.abc.IUI オブジェクトです。"""
+  """整数を表現する UI を提供します。
+  """
 
   def __init__ (
     self, 
@@ -117,7 +121,8 @@ class UI_Int (IUI):
 
 class UI_Float (IUI):
 
-  """浮動小数点数を表現する uilib.ui.abc.IUI オブジェクトです。"""
+  """浮動小数点数を表現する UI を提供します。
+  """
 
   def __init__ (
     self, 

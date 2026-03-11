@@ -23,7 +23,8 @@ from collections import OrderedDict
 
 class UI_Dict (IUI):
 
-  """文字列をキーとする辞書を表現する uilib.ui.abc.IUI オブジェクトです。"""
+  """文字列をキーとする辞書を表現する UI を提供します。
+  """
 
   def __init__ (
     self, 
