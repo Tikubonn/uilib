@@ -1,4 +1,5 @@
 
+import logging
 import tkinter
 import tkinter.ttk
 import tkinter.filedialog
@@ -8,6 +9,8 @@ from enum import Flag
 from uilib import const_
 from uilib.ui.abc import IUI
 from collections import OrderedDict
+
+_LOGGER:logging.Logger = logging.getLogger(__name__)
 
 class UI_Flag (IUI):
 
@@ -60,12 +63,17 @@ class UI_Flag (IUI):
 
   def load_from_param (self, param:list[str]):
     if isinstance(param, list):
-      for var in self.int_var_table.values():
-        var.set(0)
-      for p in param:
-        e = self.type_[p]
-        self.int_var_table[e].set(1)
-      self._on_changed()
+      if not self.readonly:
+        for var in self.int_var_table.values():
+          var.set(0)
+        for p in param:
+          e = self.type_[p]
+          self.int_var_table[e].set(1)
+        self._on_changed()
+      else:
+
+        _LOGGER.debug("Ignored loading param because instance is readonly: {!r} <- {!r}".format(self, param)) #log.
+
     else:
       raise ValueError(param) #tmp.
   

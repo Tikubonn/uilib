@@ -1,9 +1,12 @@
 
+import logging
 import tkinter
 import tkinter.ttk
 from uilib import const_
 from uilib.ui.abc import IUI
 from collections import OrderedDict
+
+_LOGGER:logging.Logger = logging.getLogger(__name__)
 
 class UI_Choices (IUI):
 
@@ -53,8 +56,13 @@ class UI_Choices (IUI):
 
   def load_from_param (self, param:str):
     if isinstance(param, str):
-      self.var.set(param)
-      self._on_changed()
+      if not self.readonly:
+        self.var.set(param)
+        self._on_changed()
+      else:
+
+        _LOGGER.debug("Ignored loading param because instance is readonly: {!r} <- {!r}".format(self, param)) #log.
+
     else:
       raise ValueError(param)
 

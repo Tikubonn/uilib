@@ -1,8 +1,11 @@
 
+import logging
 import tkinter
 import tkinter.ttk
 from uilib import const_
 from uilib.ui.abc import IUI
+
+_LOGGER:logging.Logger = logging.getLogger(__name__)
 
 class _UI_Number (IUI):
 
@@ -64,8 +67,12 @@ class _UI_Number (IUI):
     return base_frame
 
   def load_from_param (self, param:"typing.Any"):
-    self.var.set(param)
-    self._on_changed()
+    if not self.readonly:
+      self.var.set(param)
+      self._on_changed()
+    else:
+
+      _LOGGER.debug("Ignored loading param because instance is readonly: {!r} <- {!r}".format(self, param)) #log.
 
   def save_as_param (self) -> "typing.Any":
     return self.var.get()

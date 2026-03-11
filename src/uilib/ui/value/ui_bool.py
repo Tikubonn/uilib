@@ -1,7 +1,10 @@
 
+import logging
 import tkinter
 import tkinter.ttk
 from uilib.ui.abc import IUI
+
+_LOGGER:logging.Logger = logging.getLogger(__name__)
 
 class UI_Bool (IUI):
 
@@ -39,8 +42,13 @@ class UI_Bool (IUI):
 
   def load_from_param (self, param:bool):
     if isinstance(param, bool):
-      self.var.set(param)
-      self._on_changed()
+      if not self.readonly:
+        self.var.set(param)
+        self._on_changed()
+      else:
+
+        _LOGGER.debug("Ignored loading param because instance is readonly: {!r} <- {!r}".format(self, param)) #log.
+
     else:
       raise ValueError(param) #tmp.
   

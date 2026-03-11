@@ -27,6 +27,16 @@ def test_ui_int (test_toplevel):
   with pytest.raises(ValueError):
     ui_int.load_from_param(None)
 
+def test_ui_int_readonly (test_toplevel):
+  ui_int = uilib.ui.value.UI_Int(0, readonly=True)
+  built = ui_int.build(test_toplevel)
+  built.pack(fill=tkinter.X)
+  assert ui_int.get_value() == 0
+  assert ui_int.save_as_param() == 0
+  ui_int.load_from_param(1)
+  assert ui_int.get_value() == 0
+  assert ui_int.save_as_param() == 0
+
 def test_ui_float (test_toplevel):
   ui_float = uilib.ui.value.UI_Float(0.0)
   built = ui_float.build(test_toplevel)
@@ -38,3 +48,13 @@ def test_ui_float (test_toplevel):
   assert ui_float.save_as_param() == 1.25
   with pytest.raises(ValueError):
     ui_float.load_from_param(None)
+
+def test_ui_float_readonly (test_toplevel):
+  ui_float = uilib.ui.value.UI_Float(0.0, readonly=True)
+  built = ui_float.build(test_toplevel)
+  built.pack(fill=tkinter.X)
+  assert ui_float.get_value() == 0.0
+  assert ui_float.save_as_param() == 0.0
+  ui_float.load_from_param(1.25)
+  assert ui_float.get_value() == 0.0
+  assert ui_float.save_as_param() == 0.0

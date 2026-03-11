@@ -1,4 +1,5 @@
 
+import logging
 import tkinter
 import tkinter.ttk
 import tkinter.filedialog
@@ -6,6 +7,8 @@ from enum import Enum, auto, unique
 from uilib import const_
 from uilib import image_set
 from uilib.ui.abc import IUI
+
+_LOGGER:logging.Logger = logging.getLogger(__name__)
 
 @unique
 class PathType (Enum):
@@ -115,8 +118,13 @@ class UI_Path (IUI):
 
   def load_from_param (self, param:str):
     if isinstance(param, str):
-      self.str_var.set(param)
-      self._on_changed()
+      if not self.readonly:
+        self.str_var.set(param)
+        self._on_changed()
+      else:
+
+        _LOGGER.debug("Ignored loading param because instance is readonly: {!r} <- {!r}".format(self, param)) #log.
+        
     else:
       raise ValueError(param) #tmp.
   
