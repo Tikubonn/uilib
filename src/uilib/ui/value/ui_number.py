@@ -40,7 +40,7 @@ class _UI_Number (IUI):
       spinbox.bind("<Return>", self._on_changed)
       range_label = tkinter.ttk.Label(
         base_frame, 
-        text="[{:d}~{:d}]".format(min_, max_),
+        text="[{!r}~{!r}]".format(min_, max_),
         foreground=const_.TEXT_OPTIONAL_INFO_COLOR
       )
       range_label.grid(column=1, row=0, sticky=tkinter.W, padx=(const_.PADDING, 0))
