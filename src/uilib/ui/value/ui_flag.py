@@ -18,9 +18,11 @@ class UI_Flag (IUI):
     value:"enum.Flag", 
     type_:"typing.Type[enum.Flag]", 
     label_table:"dict[enum.Flag, str]"={},
+    readonly:bool=False,
     callback:"typing.Callable[[enum.Flag], None]|None"=None):
     self.type_ = type_
     self.label_table = label_table
+    self.readonly = readonly
     self.callback = callback
     self.int_var_table = OrderedDict(((f, tkinter.IntVar(value=(f in value))) for f in type_))
 
@@ -42,11 +44,16 @@ class UI_Flag (IUI):
       else:
         pady = 0
       checkbutton_text = self.label_table.get(f, f.name)
+      if self.readonly:
+        checkbutton_state = tkinter.DISABLED
+      else:
+        checkbutton_state = tkinter.NORMAL
       checkbutton = tkinter.ttk.Checkbutton(
         inner_frame, 
         text=checkbutton_text, 
         variable=var,
-        command=self._on_changed
+        command=self._on_changed,
+        state=checkbutton_state
       )
       checkbutton.pack(fill=tkinter.X, pady=pady)
     return base_frame

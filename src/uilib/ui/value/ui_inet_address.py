@@ -30,12 +30,13 @@ class UI_InetAddress (IUI):
     address:tuple[str, int],
     *,
     language:dict[str, str]|None=None,
+    readonly:bool=False,
     callback:"typing.Callable[[tuple[str, int]], None]|None"=None):
     self.language = language or global_.DEFAULT_LANGUAGE
     self.callback = callback
     host, port = address
-    self.ui_host = UI_Str(host, callback=self._callback)
-    self.ui_port = UI_Int(port, (0, 65535, 1), callback=self._callback)
+    self.ui_host = UI_Str(host, readonly=readonly, callback=self._callback)
+    self.ui_port = UI_Int(port, (0, 65535, 1), readonly=readonly, callback=self._callback)
 
   def get_value (self) -> tuple[str, int]:
     return (

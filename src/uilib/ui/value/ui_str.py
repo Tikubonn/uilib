@@ -8,9 +8,14 @@ class UI_Str (IUI):
 
   """任意の文字列を表現する uilib.ui.abc.IUI オブジェクトです。"""
 
-  def __init__ (self, value:str, callback:"typing.Callable[[str], None]|None"=None):
-    self.str_var = tkinter.StringVar(value=value)
+  def __init__ (
+    self, 
+    value:str, 
+    readonly:bool=False,
+    callback:"typing.Callable[[str], None]|None"=None):
+    self.readonly = readonly
     self.callback = callback
+    self.str_var = tkinter.StringVar(value=value)
 
   def get_value (self) -> str:
     return self.str_var.get()
@@ -21,10 +26,15 @@ class UI_Str (IUI):
 
   def build (self, master:"tkinter.Widget") -> "tkinter.Widget":
     base_frame = tkinter.ttk.Frame(master)
+    if self.readonly:
+      state = tkinter.DISABLED
+    else:
+      state = tkinter.NORMAL
     entry = tkinter.ttk.Entry(
       base_frame, 
       textvariable=self.str_var,
-      width=const_.TEXT_FORM_WIDTH
+      width=const_.TEXT_FORM_WIDTH,
+      state=state
     )
     entry.pack(fill=tkinter.X)
     entry.bind("<FocusOut>", self._on_changed)

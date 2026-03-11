@@ -10,9 +10,11 @@ class _UI_Number (IUI):
     self, 
     var:"tkinter.Variable", 
     value_range_step:"tuple[typing.Any, typing.Any, typing.Any]|None"=None,
+    readonly:bool=False,
     callback:"typing.Callable[[typing.Any], None]|None"=None):
     self.var = var
     self.value_range_step = value_range_step
+    self.readonly = readonly
     self.callback = callback
 
   def get_value (self) -> "typing.Any":
@@ -24,6 +26,10 @@ class _UI_Number (IUI):
 
   def build (self, master:"tkinter.Widget") -> "tkinter.Widget":
     base_frame = tkinter.ttk.Frame(master)
+    if self.readonly:
+      state = tkinter.DISABLED
+    else:
+      state = tkinter.NORMAL
     if self.value_range_step:
       min_, max_, step = self.value_range_step
       spinbox = tkinter.ttk.Spinbox(
@@ -33,7 +39,8 @@ class _UI_Number (IUI):
         increment=step, 
         textvariable=self.var,
         command=self._on_changed,
-        width=const_.NUMERIC_FORM_WIDTH
+        width=const_.NUMERIC_FORM_WIDTH,
+        state=state
       )
       spinbox.grid(column=0, row=0, sticky=tkinter.EW)
       spinbox.bind("<FocusOut>", self._on_changed)
@@ -48,7 +55,8 @@ class _UI_Number (IUI):
       entry = tkinter.ttk.Entry(
         base_frame, 
         textvariable=self.var,
-        width=const_.NUMERIC_FORM_WIDTH
+        width=const_.NUMERIC_FORM_WIDTH,
+        state=state
       )
       entry.grid(column=0, row=0, sticky=tkinter.EW)
       entry.bind("<FocusOut>", self._on_changed)
@@ -70,9 +78,10 @@ class UI_Int (IUI):
     self, 
     value:int, 
     value_range_step:tuple[int, int, int]|None=None,
+    readonly:bool=False,
     callback:"typing.Callable[[int], None]|None"=None):
     var = tkinter.IntVar(value=value)
-    self.ui_number = _UI_Number(var, value_range_step, callback)
+    self.ui_number = _UI_Number(var, value_range_step, readonly, callback)
 
   def get_value (self) -> int:
     return self.ui_number.get_value()
@@ -97,9 +106,10 @@ class UI_Float (IUI):
     self, 
     value:float, 
     value_range_step:tuple[float, float, float]|None=None,
+    readonly:bool=False,
     callback:"typing.Callable[[float], None]|None"=None):
     var = tkinter.DoubleVar(value=value)
-    self.ui_number = _UI_Number(var, value_range_step, callback)
+    self.ui_number = _UI_Number(var, value_range_step, readonly, callback)
 
   def get_value (self) -> float:
     return self.ui_number.get_value()

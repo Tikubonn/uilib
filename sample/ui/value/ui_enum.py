@@ -14,9 +14,13 @@ class SampleEnum (Enum):
 def callback (value:SampleEnum):
   print("Changed to", value)
 
+def pressed_on_print ():
+  global ui
+  global ui_readonly
+  print(repr(ui.get_value()))
+  print(repr(ui_readonly.get_value()))
+
 tk = tkinter.Tk()
-tk.title("Sample window")
-tk.minsize(320, 240)
 ui = uilib.ui.value.UI_Enum(
   SampleEnum.A, 
   SampleEnum, 
@@ -27,7 +31,19 @@ ui = uilib.ui.value.UI_Enum(
   }, 
   callback=callback
 )
-ui.build(tk).pack(padx=10, pady=10)
-button = tkinter.ttk.Button(tk, text="Print", command=lambda: print(repr(ui.get_value())))
-button.pack(padx=10, pady=(0, 10))
+ui.build(tk).pack(padx=10, pady=(10, 0))
+ui_readonly = uilib.ui.value.UI_Enum(
+  SampleEnum.A, 
+  SampleEnum, 
+  {
+    SampleEnum.A: "Switch to A", 
+    SampleEnum.B: "Switch to B", 
+    SampleEnum.C: "Switch to C"
+  }, 
+  readonly=True,
+  callback=callback
+)
+ui_readonly.build(tk).pack(padx=10, pady=(10, 0))
+button = tkinter.ttk.Button(tk, text="Print", command=pressed_on_print)
+button.pack(padx=10, pady=10)
 tk.mainloop()

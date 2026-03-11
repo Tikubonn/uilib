@@ -8,9 +8,14 @@ class UI_Bool (IUI):
   """真偽値を表現する uilib.ui.abc.IUI オブジェクトです。
   """
 
-  def __init__ (self, value:bool, callback:"typing.Callable[[bool], None]|None"=None):
-    self.var = tkinter.IntVar(value=value)
+  def __init__ (
+    self, 
+    value:bool, 
+    readonly:bool=False,
+    callback:"typing.Callable[[bool], None]|None"=None):
+    self.readonly = readonly
     self.callback = callback
+    self.var = tkinter.IntVar(value=value)
 
   def get_value (self) -> bool:
     return bool(self.var.get())
@@ -20,7 +25,16 @@ class UI_Bool (IUI):
       self.callback(self.get_value())
 
   def build (self, master:"tkinter.Widget") -> "tkinter.Widget":
-    checkbutton = tkinter.ttk.Checkbutton(master, variable=self.var, command=self._on_changed)
+    if self.readonly:
+      state = tkinter.DISABLED
+    else:
+      state = tkinter.NORMAL
+    checkbutton = tkinter.ttk.Checkbutton(
+      master, 
+      variable=self.var, 
+      command=self._on_changed,
+      state=state
+    )
     return checkbutton
 
   def load_from_param (self, param:bool):

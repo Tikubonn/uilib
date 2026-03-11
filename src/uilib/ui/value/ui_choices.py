@@ -14,8 +14,10 @@ class UI_Choices (IUI):
     self, 
     initial_value:"typing.Any",
     values:"list[typing.Any]",
+    readonly:bool=False,
     calc_key_func:"typing.Callable[[typing.Any], str]"=str,
     callback:"typing.Callable[[typing.Any], None]|None"=None):
+    self.readonly = readonly
     self.callback = callback
     key = calc_key_func(initial_value)
     self.var = tkinter.StringVar(value=key)
@@ -35,11 +37,15 @@ class UI_Choices (IUI):
     self._on_changed()
 
   def build (self, master:tkinter.Widget) -> tkinter.Widget:
+    if self.readonly:
+      state = tkinter.DISABLED
+    else:
+      state = "readonly"
     combobox = tkinter.ttk.Combobox(
       master,
       textvariable=self.var,
       values=list(self.value_table.keys()),
-      state="readonly",
+      state=state,
       width=const_.TEXT_FORM_WIDTH
     )
     combobox.bind("<<ComboboxSelected>>", self._on_combobox_change)

@@ -16,9 +16,11 @@ class UI_Enum (IUI):
     value:"enum.Enum", 
     type_:"typing.Type[enum.Enum]", 
     label_table:"dict[enum.Enum, str]"={},
+    readonly:bool=False,
     callback:"typing.Callable[[enum.Enum], None]|None"=None):
     self.type_ = type_
     self.label_table = label_table
+    self.readonly = readonly
     self.callback = callback
     enum_table = OrderedDict(((label_table.get(e, e.name), e) for e in type_))
     self.enum_table = enum_table
@@ -36,11 +38,15 @@ class UI_Enum (IUI):
     self._on_changed()
 
   def build (self, master:tkinter.Widget) -> tkinter.Widget:
+    if self.readonly:
+      state = tkinter.DISABLED
+    else:
+      state = "readonly"
     combobox = tkinter.ttk.Combobox(
       master, 
       values=list(self.enum_table.keys()),
       textvariable=self.var,
-      state="readonly",
+      state=state,
       width=const_.TEXT_FORM_WIDTH
     )
     combobox.bind("<<ComboboxSelected>>", self._on_combobox_selected)

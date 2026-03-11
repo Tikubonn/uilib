@@ -22,6 +22,7 @@ class UI_Path (IUI):
     value:str, 
     type_:PathType,
     file_types:list[tuple[str, str]]=[],
+    readonly:bool=False,
     callback:"typing.Callable[[str], None]|None"=None):
 
     """インスタンスの初期化を行います。
@@ -46,6 +47,7 @@ class UI_Path (IUI):
     self.str_var = tkinter.StringVar(value=value)
     self.type = type_
     self.file_types = file_types
+    self.readonly = readonly
     self.callback = callback
     self.icon_search = None
     self.icon_delete = None
@@ -91,16 +93,22 @@ class UI_Path (IUI):
       width=const_.TEXT_FORM_WIDTH
     )
     entry.grid(column=0, row=0, sticky=tkinter.EW)
+    if self.readonly:
+      button_state = tkinter.DISABLED
+    else:
+      button_state = tkinter.NORMAL
     search_button = tkinter.ttk.Button(
       base_frame, 
       image=self.icon_search, 
-      command=self._on_pressed_search
+      command=self._on_pressed_search,
+      state=button_state
     )
     search_button.grid(column=1, row=0, padx=(const_.PADDING, 0))
     delete_button = tkinter.ttk.Button(
       base_frame,
       image=self.icon_delete,
-      command=self._on_pressed_delete
+      command=self._on_pressed_delete,
+      state=button_state
     )
     delete_button.grid(column=2, row=0)
     return base_frame

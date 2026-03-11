@@ -7,14 +7,12 @@ import tkinter.ttk
 logging.basicConfig(level=logging.DEBUG)
 
 tk = tkinter.Tk()
-tk.title("Sample window")
-tk.minsize(320, 240)
 ui = uilib.ui.value.UI_Dict(
   {}, 
   add_func=lambda: uilib.ui.value.UI_Int(0, (0, 100, 1)),
   language={}
 )
-ui.build(tk).pack(padx=10, pady=10)
+ui.build(tk).pack(padx=10, pady=(10, 0))
 button = tkinter.ttk.Button(tk, text="Print", command=lambda: print(repr(ui.get_value())))
-button.pack(padx=10, pady=(0, 10))
+button.pack(padx=10, pady=10)
 tk.mainloop()
