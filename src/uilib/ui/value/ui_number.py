@@ -13,10 +13,12 @@ class _UI_Number (IUI):
     self, 
     var:"tkinter.Variable", 
     value_range_step:"tuple[typing.Any, typing.Any, typing.Any]|None"=None,
+    side_label_format:str="{!r}~{!r}",
     readonly:bool=False,
     callback:"typing.Callable[[typing.Any], None]|None"=None):
     self.var = var
     self.value_range_step = value_range_step
+    self.side_label_format = side_label_format
     self.readonly = readonly
     self.callback = callback
 
@@ -50,7 +52,7 @@ class _UI_Number (IUI):
       spinbox.bind("<Return>", self._on_changed)
       range_label = tkinter.ttk.Label(
         base_frame, 
-        text="[{!r}~{!r}]".format(min_, max_),
+        text=self.side_label_format.format(min_, max_),
         foreground=const_.TEXT_OPTIONAL_INFO_COLOR
       )
       range_label.grid(column=1, row=0, sticky=tkinter.W, padx=(const_.PADDING, 0))
@@ -88,7 +90,13 @@ class UI_Int (IUI):
     readonly:bool=False,
     callback:"typing.Callable[[int], None]|None"=None):
     var = tkinter.IntVar(value=value)
-    self.ui_number = _UI_Number(var, value_range_step, readonly, callback)
+    self.ui_number = _UI_Number(
+      var, 
+      value_range_step, 
+      side_label_format="{:d}~{:d}",
+      readonly=readonly, 
+      callback=callback
+    )
 
   def get_value (self) -> int:
     return self.ui_number.get_value()
@@ -116,7 +124,13 @@ class UI_Float (IUI):
     readonly:bool=False,
     callback:"typing.Callable[[float], None]|None"=None):
     var = tkinter.DoubleVar(value=value)
-    self.ui_number = _UI_Number(var, value_range_step, readonly, callback)
+    self.ui_number = _UI_Number(
+      var, 
+      value_range_step, 
+      side_label_format="{:.1f}~{:.1f}",
+      readonly=readonly, 
+      callback=callback
+    )
 
   def get_value (self) -> float:
     return self.ui_number.get_value()
