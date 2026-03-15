@@ -27,7 +27,7 @@ class UI_Tab (IUI):
 
   def load_from_param (self, param:"dict[str, typing.Any]"):
     if isinstance(param, dict):
-      for key, inner_param in self.uis.items():
+      for key, inner_param in param.items():
         ui = self.uis[key]
         ui.load_from_param(inner_param)
     else:
