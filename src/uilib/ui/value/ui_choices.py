@@ -13,6 +13,23 @@ class UI_Choices (IUI):
   """複数ある候補の中から1つだけを選択する UI を提供します。
   """
 
+  def update_values (self, values:"list[typing.Any]"):
+
+    """表示される選択肢を更新します。
+
+    Parameters
+    ----------
+    values : list[typing.Any]
+      置き換えられる選択肢の一覧です。
+    """
+
+    self.value_table.clear()
+    self.value_table.update([
+      (self.calc_key_func(value), value) for value in values
+    ])
+    if self.combobox:
+      self.combobox.config(values=list(self.value_table.keys()))
+
   def __init__ (
     self, 
     initial_value:"typing.Any",
@@ -22,12 +39,13 @@ class UI_Choices (IUI):
     calc_key_func:"typing.Callable[[typing.Any], str]"=str,
     callback:"typing.Callable[[typing.Any], None]|None"=None):
     self.readonly = readonly
+    self.calc_key_func = calc_key_func
     self.callback = callback
     key = calc_key_func(initial_value)
     self.var = tkinter.StringVar(value=key)
-    self.value_table = OrderedDict((
-      (calc_key_func(value), value) for value in values
-    ))
+    self.value_table = OrderedDict()
+    self.combobox = None
+    self.update_values(values)
 
   def get_value (self) -> "typing.Any":
     key = self.var.get()
@@ -53,6 +71,7 @@ class UI_Choices (IUI):
       width=const_.TEXT_FORM_WIDTH
     )
     combobox.bind("<<ComboboxSelected>>", self._on_combobox_change)
+    self.combobox = combobox
     return combobox
 
   def load_from_param (self, param:str):
