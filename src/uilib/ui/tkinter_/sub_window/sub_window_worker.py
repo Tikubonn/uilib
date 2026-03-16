@@ -47,25 +47,31 @@ class SubWindow_Worker (SubWindow):
   def __after_loop (self):
     match self.__worker_status:
       case WorkerStatus.PENDING:
-        if self.__widget_update_func:
-          self.__widget_update_func()
-        self.__after_id = self.after(1000 // self._REFLESH_RATE, self.__after_loop) #self.after によるループを継続する。
+        try:
+          if self.__widget_update_func:
+            self.__widget_update_func()
+        finally:
+          self.__after_id = self.after(1000 // self._REFLESH_RATE, self.__after_loop) #self.after によるループを継続する。
       case WorkerStatus.PAUSED:
         self.__after_id = self.after(1000 // self._REFLESH_RATE, self.__after_loop) #self.after によるループを継続する。
       case WorkerStatus.FAILED:
         if not self.__execed_widget_result_func:
           self.__execed_widget_result_func = True
           # self.__thread.join() #ワーカースレッドに対する待機処理は外部公開している .join メソッドが担当する
-          if self.__widget_failed_func:
-            self.__widget_failed_func()
-          self.destroy()
+          try:
+            if self.__widget_failed_func:
+              self.__widget_failed_func()
+          finally:
+            self.destroy()
       case WorkerStatus.SUCCEED:
         if not self.__execed_widget_result_func:
           self.__execed_widget_result_func = True
           # self.__thread.join() #ワーカースレッドに対する待機処理は外部公開している .join メソッドが担当する
-          if self.__widget_succeed_func:
-            self.__widget_succeed_func()
-          self.destroy()
+          try:
+            if self.__widget_succeed_func:
+              self.__widget_succeed_func()
+          finally:
+            self.destroy()
       case _:
         raise ValueError(self.__worker_status) #tmp.
 
@@ -85,7 +91,7 @@ class SubWindow_Worker (SubWindow):
                   raise ValueError(self.__worker_status)
           except:
             self.__worker_status = WorkerStatus.FAILED
-            traceback.print_exc() #test.
+            traceback.print_exc()
         case WorkerStatus.PAUSED:
           pass
         case WorkerStatus.FAILED | WorkerStatus.SUCCEED:

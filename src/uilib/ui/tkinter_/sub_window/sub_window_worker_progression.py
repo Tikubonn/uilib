@@ -1,10 +1,13 @@
 
 import tkinter
 import tkinter.ttk
+import logging
 import itertools
 from uilib import const_
 from typing import Generator
 from .sub_window_worker import SubWindow_Worker, WorkerStatus
+
+_LOGGER:"logging.Logger" = logging.getLogger(__name__)
 
 class SubWindow_WorkerProgression (SubWindow_Worker):
 
@@ -60,6 +63,8 @@ class SubWindow_WorkerProgression (SubWindow_Worker):
 
     self.__cur_progression = max(self.__cur_progression, min(1.0, progression))
 
+    _LOGGER.debug("Set progression: {:1.3f}".format(self.__cur_progression)) #log.
+
   def __wrapped_update_func (self):
     progressions = self.__update_func()
     if isinstance(progressions, Generator):
@@ -80,7 +85,7 @@ class SubWindow_WorkerProgression (SubWindow_Worker):
             raise ValueError(self._worker_status)
       return True #Don't repeat again.
     else:
-      raise ValueError(progressions)
+      raise ValueError(progressions) #tmp.
 
   def __widget_update_func (self):
     progression_int = round(self.__cur_progression * self._MAX_PROGRESSION_VALUE)
