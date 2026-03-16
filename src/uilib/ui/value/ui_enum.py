@@ -20,20 +20,24 @@ class UI_Enum (IUI):
     value:"enum.Enum", 
     type_:"typing.Type[enum.Enum]", 
     *,
-    label_table:"dict[enum.Enum, str]"={},
+    calc_key_func:"typing.Callable[[enum.Enum], str]|None"=None,
     readonly:bool=False,
     callback:"typing.Callable[[enum.Enum], None]|None"=None):
     self.type_ = type_
-    self.label_table = label_table
     self.readonly = readonly
     self.callback = callback
-    enum_table = OrderedDict(((label_table.get(e, e.name), e) for e in type_))
-    self.enum_table = enum_table
-    self.var = tkinter.StringVar(value=label_table.get(value, value.name))
+    if calc_key_func:
+      calc_key_fn = calc_key_func
+    else:
+      calc_key_fn = lambda enum: enum.name
+    label_and_enums = [(calc_key_fn(e), e) for e in type_]
+    self.enum_to_label = {e: l for l, e in label_and_enums}
+    self.label_to_enum = OrderedDict(((l, e) for l, e in label_and_enums))
+    self.var = tkinter.StringVar(value=self.enum_to_label[value])
 
   def get_value (self) -> "enum.Enum":
     value = self.var.get()
-    return self.enum_table[value]
+    return self.label_to_enum[value]
 
   def _on_changed (self):
     if self.callback:
@@ -49,7 +53,7 @@ class UI_Enum (IUI):
       state = "readonly"
     combobox = tkinter.ttk.Combobox(
       master, 
-      values=list(self.enum_table.keys()),
+      values=list(self.label_to_enum.keys()),
       textvariable=self.var,
       state=state,
       width=const_.TEXT_FORM_WIDTH
@@ -61,7 +65,7 @@ class UI_Enum (IUI):
     if isinstance(param, str):
       if not self.readonly:
         e = self.type_[param]
-        self.var.set(self.label_table.get(e, e.name))
+        self.var.set(self.enum_to_label[e])
         self._on_changed()
       else:
 
@@ -71,5 +75,4 @@ class UI_Enum (IUI):
       raise ValueError(param) #tmp.
 
   def save_as_param (self) -> str:
-    e = self.get_value()
-    return e.name
+    return self.var.get()
