@@ -24,22 +24,12 @@ tk = tkinter.Tk()
 ui = uilib.ui.value.UI_Flag(
   SampleFlag.A|SampleFlag.B|SampleFlag.C, 
   SampleFlag, 
-  label_table={
-    SampleFlag.A: "Toggle A", 
-    SampleFlag.B: "Toggle B", 
-    SampleFlag.C: "Toggle C"
-  },
   callback=callback
 )
 ui.build(tk).pack(padx=10, pady=(10, 0))
 ui_readonly = uilib.ui.value.UI_Flag(
   SampleFlag.A|SampleFlag.B|SampleFlag.C, 
   SampleFlag, 
-  label_table={
-    SampleFlag.A: "Toggle A", 
-    SampleFlag.B: "Toggle B", 
-    SampleFlag.C: "Toggle C"
-  },
   readonly=True,
   callback=callback
 )

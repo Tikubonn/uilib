@@ -105,7 +105,8 @@ class SubWindow_WorkerProgression (SubWindow_Worker):
     widget_succeed_func:"typing.Callable[[], None]|None"=None,
     language:"dict[str, str]|None"=None,
     is_modal:bool=False,
-    pause_on_asking:bool=False):
+    pause_on_asking:bool=False,
+    ask_on_closing:bool=True):
 
     """インスタンスの初期化を行います。
 
@@ -166,5 +167,6 @@ class SubWindow_WorkerProgression (SubWindow_Worker):
       widget_succeed_func=widget_succeed_func,
       language=language,
       is_modal=is_modal,
-      pause_on_asking=pause_on_asking
+      pause_on_asking=pause_on_asking,
+      ask_on_closing=ask_on_closing
     )

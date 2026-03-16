@@ -131,11 +131,14 @@ class SubWindow_Worker (SubWindow):
         if self.__pause_on_asking:
           self.__worker_status = WorkerStatus.PAUSED
         try:
-          answer = tkinter.messagebox.askyesno(
-            language.translate("DIALOG_WORKER_ABORT_CONFIRMATION_TITLE", self.__language),
-            language.translate("DIALOG_WORKER_ABORT_CONFIRMATION", self.__language)
-          )
-          if answer:
+          if self.__ask_on_closing:
+            should_close = tkinter.messagebox.askyesno(
+              language.translate("DIALOG_WORKER_ABORT_CONFIRMATION_TITLE", self.__language),
+              language.translate("DIALOG_WORKER_ABORT_CONFIRMATION", self.__language)
+            )
+          else:
+            should_close = True
+          if should_close:
             self.destroy()
         finally:
           match self.__worker_status:
@@ -159,7 +162,8 @@ class SubWindow_Worker (SubWindow):
     widget_succeed_func:"typing.Callable[[], None]|None"=None,
     language:"dict[str, str]|None"=None,
     is_modal:bool=False,
-    pause_on_asking:bool=False):
+    pause_on_asking:bool=False,
+    ask_on_closing:bool=True):
 
     """インスタンスの初期化を行います。
 
@@ -213,6 +217,7 @@ class SubWindow_Worker (SubWindow):
     self.__widget_succeed_func = widget_succeed_func
     self.__language = language or global_.DEFAULT_LANGUAGE
     self.__pause_on_asking = pause_on_asking
+    self.__ask_on_closing = ask_on_closing
     self.__worker_status = WorkerStatus.PENDING
     self.__execed_widget_result_func = False #widget_failed_func, widget_succeed_func のいずれかが実行されたかを記録する変数
     self.__after_id = ""
