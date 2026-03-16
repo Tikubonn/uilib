@@ -22,17 +22,23 @@ class UI_Flag (IUI):
     value:"enum.Flag", 
     type_:"typing.Type[enum.Flag]", 
     *,
-    label_table:"dict[enum.Flag, str]"={},
+    calc_key_func:"typing.Callable[[enum.Flag], str]|None"=None,
     readonly:bool=False,
     callback:"typing.Callable[[enum.Flag], None]|None"=None):
     self.type_ = type_
-    self.label_table = label_table
     self.readonly = readonly
     self.callback = callback
-    self.int_var_table = OrderedDict(((f, tkinter.IntVar(value=(f in value))) for f in type_))
+    if calc_key_func:
+      calc_key_fn = calc_key_func
+    else:
+      calc_key_fn = lambda flag: flag.name
+    label_and_flag = [(calc_key_fn(f), f) for f in type_]
+    self.enum_to_label = {f: l for l, f in label_and_flag}
+    self.enum_to_var = OrderedDict((f, tkinter.IntVar(value=(f in value))) for _, f in label_and_flag)
+    self.label_to_enum = OrderedDict((l, f) for l, f in label_and_flag)
 
-  def get_value (self) -> Flag:
-    enable_flags = (f for f, var in self.int_var_table.items() if var.get())
+  def get_value (self) -> "enum.Flag":
+    enable_flags = (f for f, var in self.enum_to_var.items() if var.get())
     return functools.reduce(operator.or_, enable_flags, self.type_(0))
 
   def _on_changed (self):
@@ -43,12 +49,12 @@ class UI_Flag (IUI):
     base_frame = tkinter.ttk.Frame(master, relief=tkinter.GROOVE)
     inner_frame = tkinter.ttk.Frame(base_frame)
     inner_frame.pack(fill=tkinter.X, padx=const_.PADDING_L, pady=const_.PADDING_L)
-    for i, (f, var) in enumerate(self.int_var_table.items()):
+    for i, (f, var) in enumerate(self.enum_to_var.items()):
       if 0 < i:
         pady = (const_.PADDING, 0)
       else:
         pady = 0
-      checkbutton_text = self.label_table.get(f, f.name)
+      checkbutton_text = self.enum_to_label[f]
       if self.readonly:
         checkbutton_state = tkinter.DISABLED
       else:
@@ -66,11 +72,11 @@ class UI_Flag (IUI):
   def load_from_param (self, param:list[str]):
     if isinstance(param, list):
       if not self.readonly:
-        for var in self.int_var_table.values():
+        for var in self.enum_to_var.values():
           var.set(0)
         for p in param:
           e = self.type_[p]
-          self.int_var_table[e].set(1)
+          self.enum_to_var[e].set(1)
         self._on_changed()
       else:
 
@@ -80,4 +86,4 @@ class UI_Flag (IUI):
       raise ValueError(param) #tmp.
   
   def save_as_param (self) -> list[str]:
-    return [f.name for f, var in self.int_var_table.items() if var.get()]
+    return [f.name for f, var in self.enum_to_var.items() if var.get()]
