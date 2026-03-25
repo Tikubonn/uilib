@@ -27,6 +27,6 @@ class SubWindow (tkinter.Toplevel):
 
     super().__init__(master)
     setup_func(self)
-    self.transient(master)
     if is_modal:
+      self.transient(master) #tkinter.Toplevel.wm_attributes("-topmost", 1)
       self.grab_set()

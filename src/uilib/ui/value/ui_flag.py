@@ -75,7 +75,7 @@ class UI_Flag (IUI):
         for var in self.enum_to_var.values():
           var.set(0)
         for p in param:
-          e = self.type_[p]
+          e = self.label_to_enum[p]
           self.enum_to_var[e].set(1)
         self._on_changed()
       else:

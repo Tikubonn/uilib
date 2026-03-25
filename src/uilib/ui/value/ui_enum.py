@@ -64,7 +64,7 @@ class UI_Enum (IUI):
   def load_from_param (self, param:str):
     if isinstance(param, str):
       if not self.readonly:
-        e = self.type_[param]
+        e = self.label_to_enum[param]
         self.var.set(self.enum_to_label[e])
         self._on_changed()
       else:

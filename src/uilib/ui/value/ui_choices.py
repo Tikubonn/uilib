@@ -47,9 +47,9 @@ class UI_Choices (IUI):
     self.combobox = None
     self.update_values(values)
 
-  def get_value (self) -> "typing.Any":
+  def get_value (self) -> "typing.Any|None":
     key = self.var.get()
-    return self.value_table[key]
+    return self.value_table.get(key, None)
 
   def _on_changed (self):
     if self.callback:
