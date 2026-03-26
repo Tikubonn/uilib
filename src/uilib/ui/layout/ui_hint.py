@@ -20,7 +20,6 @@ class UI_Hint (IUI):
     #main
 
     label = tkinter.ttk.Label(master, image=self.hint_icon)
-    label.pack()
     Tooltip(label, self.text)
     return label
 
