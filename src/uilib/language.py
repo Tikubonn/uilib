@@ -26,7 +26,6 @@ def translate (id_:str, language:dict[str, str]|None=None) -> str:
     対応する文字列が見つからなかった時には、引数 id_ がそのまま返されます。
   """
 
-  global DEFAULT
   if language:
     lang = language
   else:
