@@ -4,7 +4,8 @@ import tkinter
 import tkinter.ttk
 
 tk = tkinter.Tk()
-ui = uilib.ui.layout.UI_Hint("This is tooltip text.")
+tooltip_text = " ".join(["This is tooltip text."] * 10)
+ui = uilib.ui.layout.UI_Hint(tooltip_text)
 ui.build(tk).pack(padx=10, pady=10)
 button_frame = tkinter.ttk.Frame(tk)
 button_frame.pack(fill=tkinter.X, padx=10, pady=10)

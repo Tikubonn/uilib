@@ -8,11 +8,13 @@ class _TooltipOverlay (tkinter.Toplevel):
   """Tooltip インスタンスが作成するツールチップを模したサブウィンドウです。
   """
 
+  _MAX_WIDTH:"typing.ClassVar[int]" = 240
+
   def _build (self):
-    base_frame = tkinter.ttk.Frame(self)
+    base_frame = tkinter.ttk.Frame(self, borderwidth=1, relief="raised") #視認性のために境界線を表示する
     base_frame.pack()
-    label = tkinter.ttk.Label(base_frame, text=self.text)
-    label.pack(fill=tkinter.X, padx=const_.PADDING, pady=const_.PADDING)
+    message = tkinter.Message(base_frame, text=self.text, width=self._MAX_WIDTH)
+    message.pack() #Message 自体にマージンが設定されているため padx, pady は指定しない
 
   def __init__ (self, master:"tkinter.Widget", text:str):
 
