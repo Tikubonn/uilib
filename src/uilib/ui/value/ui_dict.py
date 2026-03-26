@@ -4,7 +4,6 @@ import tkinter.ttk
 import tkinter.messagebox
 import tkinter.simpledialog
 from uilib import const_
-from uilib import global_
 from uilib import language
 from uilib import image_set
 from uilib.ui.abc import IUI
@@ -35,7 +34,7 @@ class UI_Dict (IUI):
     callback:"typing.Callable[[dict[str, typing.Any]], None]|None"=None):
     self.uis = OrderedDict(uis)
     self.add_func = add_func
-    self.language = language or global_.DEFAULT_LANGUAGE
+    self.language = language
     self.callback = callback
     self.entry_var = tkinter.StringVar(value="")
     self.listbox_var = tkinter.StringVar(value="")

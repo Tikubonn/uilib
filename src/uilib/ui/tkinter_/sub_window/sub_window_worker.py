@@ -3,7 +3,6 @@ import atexit
 import tkinter
 import tkinter.messagebox
 import traceback
-from uilib import global_
 from uilib import language
 from enum import Enum, auto, unique
 from threading import Thread
@@ -215,7 +214,7 @@ class SubWindow_Worker (SubWindow):
     self.__widget_update_func = widget_update_func
     self.__widget_failed_func = widget_failed_func
     self.__widget_succeed_func = widget_succeed_func
-    self.__language = language or global_.DEFAULT_LANGUAGE
+    self.__language = language
     self.__pause_on_asking = pause_on_asking
     self.__ask_on_closing = ask_on_closing
     self.__worker_status = WorkerStatus.PENDING
