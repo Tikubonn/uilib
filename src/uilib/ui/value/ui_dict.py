@@ -90,17 +90,18 @@ class UI_Dict (IUI):
         language.translate("UILIB_DIALOG_DICT_ADD", self.language),
         initialvalue=self.entry_var.get()
       )
-      if key not in self.uis:
-        ui = self.add_func()
-        self.uis[key] = ui
-        self._update_listbox_var()
-        self._rebuild()
-        self._on_changed()
-      else:
-        tkinter.messagebox.showerror(
-          language.translate("UILIB_ERROR_DICT_KEY_EXISTS_TITLE", self.language),
-          language.translate("UILIB_ERROR_DICT_KEY_EXISTS", self.language)
-        )
+      if key:
+        if key not in self.uis:
+          ui = self.add_func()
+          self.uis[key] = ui
+          self._update_listbox_var()
+          self._rebuild()
+          self._on_changed()
+        else:
+          tkinter.messagebox.showerror(
+            language.translate("UILIB_ERROR_DICT_KEY_EXISTS_TITLE", self.language),
+            language.translate("UILIB_ERROR_DICT_KEY_EXISTS", self.language)
+          )
     else:
 
       _LOGGER.debug("Pressed add button, but .add_func is None: {!r}".format(self)) #log.
