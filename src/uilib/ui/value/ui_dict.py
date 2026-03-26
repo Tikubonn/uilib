@@ -86,8 +86,8 @@ class UI_Dict (IUI):
   def _on_pressed_add (self):
     if self.add_func:
       key = tkinter.simpledialog.askstring(
-        language.translate("DIALOG_DICT_ADD_TITLE", self.language),
-        language.translate("DIALOG_DICT_ADD", self.language),
+        language.translate("UILIB_DIALOG_DICT_ADD_TITLE", self.language),
+        language.translate("UILIB_DIALOG_DICT_ADD", self.language),
         initialvalue=self.entry_var.get()
       )
       if key not in self.uis:
@@ -98,8 +98,8 @@ class UI_Dict (IUI):
         self._on_changed()
       else:
         tkinter.messagebox.showerror(
-          language.translate("ERROR_DICT_KEY_EXISTS_TITLE", self.language),
-          language.translate("ERROR_DICT_KEY_EXISTS", self.language)
+          language.translate("UILIB_ERROR_DICT_KEY_EXISTS_TITLE", self.language),
+          language.translate("UILIB_ERROR_DICT_KEY_EXISTS", self.language)
         )
     else:
 
@@ -109,8 +109,8 @@ class UI_Dict (IUI):
     key = self.entry_var.get()
     if key: #入力欄が空でなければダイアログを表示する。
       alt_key = tkinter.simpledialog.askstring(
-        language.translate("DIALOG_DICT_RENAME_TITLE", self.language),
-        language.translate("DIALOG_DICT_RENAME", self.language),
+        language.translate("UILIB_DIALOG_DICT_RENAME_TITLE", self.language),
+        language.translate("UILIB_DIALOG_DICT_RENAME", self.language),
         initialvalue=self.entry_var.get()
       )
       if alt_key:
@@ -125,13 +125,13 @@ class UI_Dict (IUI):
             self._on_changed()
           else:
             tkinter.messagebox.showerror(
-              language.translate("ERROR_DICT_KEY_NOT_EXISTS_TITLE", self.language),
-              language.translate("ERROR_DICT_KEY_NOT_EXISTS", self.language)
+              language.translate("UILIB_ERROR_DICT_KEY_NOT_EXISTS_TITLE", self.language),
+              language.translate("UILIB_ERROR_DICT_KEY_NOT_EXISTS", self.language)
             )
         else:
           tkinter.messagebox.showerror(
-            language.translate("ERROR_DICT_SAME_KEY_TITLE", self.language),
-            language.translate("ERROR_DICT_SAME_KEY", self.language)
+            language.translate("UILIB_ERROR_DICT_SAME_KEY_TITLE", self.language),
+            language.translate("UILIB_ERROR_DICT_SAME_KEY", self.language)
           )
 
   def _on_pressed_delete (self):
@@ -139,8 +139,8 @@ class UI_Dict (IUI):
     if key:
       if key in self.uis:
         answer = tkinter.messagebox.askokcancel(
-          language.translate("DIALOG_DICT_DELETE_TITLE", self.language),
-          language.translate("DIALOG_DICT_DELETE", self.language)
+          language.translate("UILIB_DIALOG_DICT_DELETE_TITLE", self.language),
+          language.translate("UILIB_DIALOG_DICT_DELETE", self.language)
         )
         if answer:
           del self.uis[key]
@@ -150,8 +150,8 @@ class UI_Dict (IUI):
           self._on_changed()
       else:
         tkinter.messagebox.showerror(
-          language.translate("ERROR_DICT_KEY_NOT_EXISTS_TITLE", self.language),
-          language.translate("ERROR_DICT_KEY_NOT_EXISTS", self.language)
+          language.translate("UILIB_ERROR_DICT_KEY_NOT_EXISTS_TITLE", self.language),
+          language.translate("UILIB_ERROR_DICT_KEY_NOT_EXISTS", self.language)
         )
 
   def _on_listbox_select (self, event:tkinter.Event|None=None):

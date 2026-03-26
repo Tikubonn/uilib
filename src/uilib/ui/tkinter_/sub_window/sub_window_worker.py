@@ -132,8 +132,8 @@ class SubWindow_Worker (SubWindow):
         try:
           if self.__ask_on_closing:
             should_close = tkinter.messagebox.askyesno(
-              language.translate("DIALOG_WORKER_ABORT_CONFIRMATION_TITLE", self.__language),
-              language.translate("DIALOG_WORKER_ABORT_CONFIRMATION", self.__language)
+              language.translate("UILIB_DIALOG_WORKER_ABORT_CONFIRMATION_TITLE", self.__language),
+              language.translate("UILIB_DIALOG_WORKER_ABORT_CONFIRMATION", self.__language)
             )
           else:
             should_close = True
