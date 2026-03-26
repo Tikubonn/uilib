@@ -3,7 +3,10 @@ import tkinter
 import tkinter.ttk
 from uilib import const_
 
-class TooltipOverlay (tkinter.Toplevel):
+class _TooltipOverlay (tkinter.Toplevel):
+
+  """Tooltip インスタンスが作成するツールチップを模したサブウィンドウです。
+  """
 
   def _build (self):
     base_frame = tkinter.ttk.Frame(self)
@@ -12,12 +15,30 @@ class TooltipOverlay (tkinter.Toplevel):
     label.pack(fill=tkinter.X, padx=const_.PADDING, pady=const_.PADDING)
 
   def __init__ (self, master:"tkinter.Widget", text:str):
+
+    """インスタンスの初期化を行います。
+
+    Parameters
+    ----------
+    widget : tkinter.Widget
+      親となるウィジットです。
+    text : str
+      本サブウィンドウに表示されるテキストです。
+    """
+
     super().__init__(master)
     self.wm_overrideredirect(True)
     self.text = text
     self._build()
 
 class Tooltip:
+
+  """指定要素にマウスオーバーした際にテキストをポップアップする機能を提供します。
+
+  Notes
+  -----
+  <Motion> イベントを捕捉するために本クラスはウィジットではなく、対象ウィジットを引数に取る独立クラスとして実装されています。
+  """
 
   _OFFSET:"typing.ClassVar[tuple[int, int]]" = (12, 12)
 
@@ -29,7 +50,7 @@ class Tooltip:
 
   def _on_enter (self, event:"tkinter.Event"):
     if not self.overlay:
-      self.overlay = TooltipOverlay(self.widget, self.text)
+      self.overlay = _TooltipOverlay(self.widget, self.text)
       self._overlay_update((event.x_root, event.y_root))
 
   def _on_motion (self, event:"tkinter.Event"):
@@ -47,6 +68,25 @@ class Tooltip:
     self.widget.bind("<Leave>", self._on_leave)
 
   def __init__ (self, widget:"tkinter.Widget", text:str):
+
+    """インスタンスの初期化を行います。
+
+    Warnings
+    --------
+    引数 widget にこれらのイベントが既に指定されていた場合、本インスタンスはそれらを自身の関数で上書きします。
+
+    * <Enter>
+    * <Motion>
+    * <Leave>
+
+    Parameters
+    ----------
+    widget : tkinter.Widget
+      ツールチップ機能を追加するウィジットです。
+    text : str
+      マウスオーバー時に表示されるテキストです。
+    """
+
     self.widget = widget
     self.text = text
     self.overlay = None
