@@ -98,9 +98,19 @@ tk.mainloop()
 | --- | --- | --- |
 | テキスト | `uilib.ui.layout.UI_Text` | 折り返しを含む複数行の文章を表示します。 |
 | ボタン | `uilib.ui.layout.UI_Button` | |
-| トグルボックス | `uilib.ui.layout.UI_Toggle` | |
+| トグル表示 | `uilib.ui.layout.UI_Toggle` | |
 | レイアウト | `uilib.ui.layout.UI_Layout` | グリッドレイアウトを提供します。各セルごとに列幅・行幅・揃えを指定することができます。 |
 | 名前付きレイアウト | `uilib.ui.layout.UI_Group` | グリッドレイアウトを提供します。各セルごとに列幅・行幅・揃えを指定することができます。 |
+| ヒント | `uilib.ui.layout.UI_Hint` | マウスオーバーすることで追加情報を表示します。 |
+
+### 特殊なウィジット
+
+| 内容 | クラス | 備考 |
+| --- | --- | --- |
+| サブウィンドウ | `uilib.ui.tkinter_.sub_window.SubWindow` | |
+| サブウィンドウ(ワーカー) | `uilib.ui.tkinter_.sub_window.SubWindow_Worker` | 閉じられるとワーカー処理も中断される。 |
+| サブウィンドウ(進捗表示・ワーカー) | `uilib.ui.tkinter_.sub_window.SubWindow_WorkerProgression` | ワーカー処理の進捗状況を表示する。閉じられるとワーカー処理も中断される。 |
+| サブウィンドウ(進捗表示・ワーカー・マルチスレッド) | `uilib.ui.tkinter_.sub_window.SubWindow_ThreadPoolWorkerProgression` | ワーカー処理の進捗状況を表示する。複数処理を並行して行う。閉じられるとワーカー処理も中断される。 |
 
 ## Install
 
