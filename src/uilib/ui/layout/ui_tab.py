@@ -36,7 +36,7 @@ class UI_Tab (IUI):
         ui = self.uis[key]
         ui.load_from_param(inner_param)
     else:
-      raise ValueError(param) #tmp.
+      raise ValueError("Given an invalid param: {!r}".format(param))
 
   def save_as_param (self) -> "dict[str, typing.Any]":
     return {

@@ -9,6 +9,8 @@ def test_ui_hint (test_toplevel):
   built.pack()
   assert ui_hint.get_value() is None
   assert ui_hint.save_as_param() is None
-  ui_hint.load_from_param(123)
+  ui_hint.load_from_param(None)
   assert ui_hint.get_value() is None
   assert ui_hint.save_as_param() is None
+  with pytest.raises(ValueError):
+    ui_hint.load_from_param(123)

@@ -21,7 +21,10 @@ class UI_Button (IUI):
     return base_frame
 
   def load_from_param (self, param:None):
-    pass
+    if param is None:
+      pass
+    else:
+      raise ValueError("Given an invalid param: {!r}".format(param))
 
   def save_as_param (self) -> None:
     return None

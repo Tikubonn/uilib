@@ -49,8 +49,11 @@ class _UI_License (IUI):
     text.pack(fill=tkinter.X, pady=(const_.PADDING_L, 0))
     return base_frame
 
-  def load_from_param (self, param:"typing.Any"):
-    pass
+  def load_from_param (self, param:None):
+    if param is None:
+      pass
+    else:
+      raise ValueError("Given an invalid param: {!r}".format(param))
 
   def save_as_param (self) -> None:
     return None
@@ -79,8 +82,11 @@ class UI_Licenses (IUI):
   def build (self, master:"tkinter.Widget") -> "tkinter.Widget":
     return self.ui.build(master)
 
-  def load_from_param (self, param:"typing.Any"):
-    pass
+  def load_from_param (self, param:None):
+    if param is None:
+      pass
+    else:
+      raise ValueError("Given an invalid param: {!r}".format(param))
 
   def save_as_param (self) -> None:
     return None

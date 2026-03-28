@@ -125,7 +125,7 @@ class UI_Layout (IUI):
       for ui, ui_param in zip(uis, param):
         ui.load_from_param(ui_param)
     else:
-      raise ValueError(param) #tmp.
+      raise ValueError("Given an invalid param: {!r}".format(param))
   
   def save_as_param (self) -> "list[typing.Any]":
     uis = [cinfo.ui for cinfo in itertools.chain.from_iterable(self._cell_infos) if cinfo.ui]

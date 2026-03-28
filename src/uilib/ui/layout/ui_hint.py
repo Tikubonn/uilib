@@ -26,8 +26,11 @@ class UI_Hint (IUI):
   def get_value (self) -> None:
     pass
 
-  def load_from_param (self, param:"typing.Any"):
-    pass
+  def load_from_param (self, param:None):
+    if param is None:
+      pass
+    else:
+      raise ValueError("Given an invalid param: {!r}".format(param))
 
   def save_as_param (self) -> None:
     pass

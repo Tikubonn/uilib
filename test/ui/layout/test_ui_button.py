@@ -9,6 +9,8 @@ def test_ui_button (test_toplevel):
   built.pack()
   assert ui_button.get_value() is None
   assert ui_button.save_as_param() is None
-  ui_button.load_from_param(123)
+  ui_button.load_from_param(None)
   assert ui_button.get_value() is None
   assert ui_button.save_as_param() is None
+  with pytest.raises(ValueError):
+    ui_button.load_from_param(123)

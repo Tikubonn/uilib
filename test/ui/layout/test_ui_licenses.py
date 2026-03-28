@@ -9,6 +9,8 @@ def test_ui_licenses (test_toplevel):
   built.pack()
   assert ui_licenses.get_value() is None
   assert ui_licenses.save_as_param() is None
-  ui_licenses.load_from_param(123)
+  ui_licenses.load_from_param(None)
   assert ui_licenses.get_value() is None
   assert ui_licenses.save_as_param() is None
+  with pytest.raises(ValueError):
+    ui_licenses.load_from_param(123)
