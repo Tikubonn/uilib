@@ -6,3 +6,4 @@ from .ui_toggle import UI_Toggle
 from .ui_group import UI_Group
 from .ui_tab import UI_Tab
 from .ui_hint import UI_Hint
+from .ui_licenses import UI_Licenses, License

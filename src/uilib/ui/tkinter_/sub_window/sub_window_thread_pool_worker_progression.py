@@ -2,14 +2,20 @@
 import time
 import itertools
 from typing import Generator
-from threading import RLock
-from concurrent.futures import ThreadPoolExecutor
+from threading import Event, RLock
+from concurrent.futures import ThreadPoolExecutor, CancelledError
 from .sub_window_worker import WorkerStatus
 from .sub_window_worker_progression import SubWindow_WorkerProgression
 
-class ThreadPoolError (Exception):
+class ThreadPoolError (Exception): #暫定的な名称
 
-  pass
+  def __init__ (self, exceptions:"dict[concurrent.features.Feature, Exception]"):
+    super().__init__(exceptions)
+    self._exceptions = exceptions
+
+  @property
+  def exceptions (self) -> "dict[concurrent.features.Feature, Exception]": #tmp.
+    return self._exceptions
 
 class SubWindow_ThreadPoolWorkerProgression (SubWindow_WorkerProgression):
 
@@ -25,7 +31,7 @@ class SubWindow_ThreadPoolWorkerProgression (SubWindow_WorkerProgression):
           case WorkerStatus.PENDING:
             try:
               progression = next(progressions)
-              with self.__lock:
+              with self.__progression_table_lock:
                 self.__progression_table[func] = max(self.__progression_table[func], min(1.0, progression))
                 self._set_progression(sum(self.__progression_table.values()) / max(1, len(self.__progression_table)))
             except StopIteration:
@@ -39,6 +45,8 @@ class SubWindow_ThreadPoolWorkerProgression (SubWindow_WorkerProgression):
     else:
       raise ValueError(progressions) #tmp.
 
+  _POLL_INTERVAL:"typing.ClassVar[float]" = 0.001
+
   def __update_func (self) -> "typing.Generator[float, None, None]":
     self.__executor = ThreadPoolExecutor()
     try:
@@ -47,9 +55,12 @@ class SubWindow_ThreadPoolWorkerProgression (SubWindow_WorkerProgression):
         feature = self.__executor.submit(self.__exec_update_func, func)
         features.append(feature)
     finally:
-      self.__all_submitted = True #この処理が完了するまでの間 .join を実行させてはならない。
-    while not all((f.done() for f in features)):
+      self.__setup_event.set() #全関数を submit するまでの間 .join を実行させてはならない。
+    while any((not f.done() for f in features)):
       feature_exceptions = {}
+
+      #例外を捕捉する
+
       for f in features:
         try:
           exception = f.exception(timeout=0.0)
@@ -57,10 +68,21 @@ class SubWindow_ThreadPoolWorkerProgression (SubWindow_WorkerProgression):
             feature_exceptions[f] = exception
         except TimeoutError:
           pass
+
+      #例外が捕捉されたならば、すべての処理を中断し、それらの例外を捕捉する
+
       if feature_exceptions:
         for f in features:
           f.cancel()
+        for f in features:
+          try:
+            exception = f.exception()
+            if exception:
+              feature_exceptions[f] = exception
+          except CancelledError as exception:
+            feature_exceptions[f] = exception #念のため CancelledError も捕捉する
         raise ThreadPoolError(feature_exceptions)
+      time.sleep(self._POLL_INTERVAL) #負荷軽減のために極短時間待機する。
     yield 1.0
 
   def __init__ (
@@ -70,9 +92,9 @@ class SubWindow_ThreadPoolWorkerProgression (SubWindow_WorkerProgression):
     message:str,
     *,
     update_funcs:"list[typing.Callable[[], typing.Generator[float, None, None]]]",
-    failed_func:"typing.Callable[[], None]|None"=None,
+    failed_func:"typing.Callable[[BaseException|None], None]|None"=None,
     succeed_func:"typing.Callable[[], None]|None"=None,
-    widget_failed_func:"typing.Callable[[], None]|None"=None,
+    widget_failed_func:"typing.Callable[[BaseException|None], None]|None"=None,
     widget_succeed_func:"typing.Callable[[], None]|None"=None,
     language:"dict[str, str]|None"=None,
     is_modal:bool=False,
@@ -127,12 +149,10 @@ class SubWindow_ThreadPoolWorkerProgression (SubWindow_WorkerProgression):
     """
 
     self.__update_funcs = update_funcs
-    self.__progression_table = {
-      func: 0.0 for func in update_funcs
-    }
-    self.__lock = RLock()
+    self.__progression_table = {func: 0.0 for func in update_funcs} #各関数毎の進捗状況を記録する辞書
+    self.__progression_table_lock = RLock()
     self.__executor = None
-    self.__all_submitted = False
+    self.__setup_event = Event()
     super().__init__(
       master,
       title,
@@ -149,8 +169,7 @@ class SubWindow_ThreadPoolWorkerProgression (SubWindow_WorkerProgression):
     )
 
   def join (self):
-    while not self.__all_submitted:
-      time.sleep(0) #無意味だったはずだが、スレッドの実行権を別スレッドに委譲するコード。
+    self.__setup_event.wait()
     if self.__executor:
       self.__executor.shutdown(wait=True)
     super().join() #ThreadPoolExecutor の待機後に親クラスの待機処理に移行します。

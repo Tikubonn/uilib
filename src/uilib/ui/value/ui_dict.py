@@ -193,83 +193,121 @@ class UI_Dict (IUI):
     self.icon_edit = image_set.get_image("image/icon/edit.png", (12, 12))
     self.icon_delete = image_set.get_image("image/icon/delete.png", (12, 12))
 
-    #Main
+    #base
 
     base_frame = tkinter.ttk.Frame(master, relief=tkinter.GROOVE)
     inner_frame = tkinter.ttk.Frame(base_frame)
-    inner_frame.pack(fill=tkinter.X, padx=const_.PADDING_L, pady=const_.PADDING_L)
-    inner_frame.columnconfigure(0, weight=1)
+    inner_frame.pack(
+      fill=tkinter.X, 
+      padx=const_.PADDING_L, 
+      pady=const_.PADDING_L
+    )
+    nav_frame = tkinter.ttk.Frame(inner_frame)
+    nav_frame.grid(
+      column=0, 
+      row=0, 
+      sticky=tkinter.NS
+    )
+
+    #entry
+
     entry = tkinter.ttk.Entry(
-      inner_frame, 
+      nav_frame, 
       textvariable=self.entry_var, 
       state=tkinter.DISABLED,
       width=const_.TEXT_FORM_WIDTH
     )
-    entry.grid(column=0, row=0, sticky=tkinter.EW, padx=(0, const_.PADDING))
 
-    #add button
-
-    if self.add_func and not self.readonly:
-      add_button_state = tkinter.NORMAL
+    if self.readonly:
+      entry_span = 4
     else:
-      add_button_state = tkinter.DISABLED
-    add_button = tkinter.ttk.Button(
-      inner_frame,
-      image=self.icon_add,
-      command=self._on_pressed_add,
-      state=add_button_state
+      entry_span = 1
+    entry.grid(
+      column=0, 
+      columnspan=entry_span,
+      row=0, 
+      sticky=tkinter.EW, 
+      padx=(0, const_.PADDING)
     )
-    add_button.grid(column=1, row=0)
-
-    #rename button
 
     if not self.readonly:
-      rename_button_state = tkinter.NORMAL
-    else:
-      rename_button_state = tkinter.DISABLED
-    rename_button = tkinter.ttk.Button(
-      inner_frame,
-      image=self.icon_edit,
-      command=self._on_pressed_rename,
-      state=rename_button_state
-    )
-    rename_button.grid(column=2, row=0)
 
-    #delete button
-  
-    if not self.readonly:
-      delete_button_state = tkinter.NORMAL    
-    else:
-      delete_button_state = tkinter.DISABLED
-    delete_button = tkinter.ttk.Button(
-      inner_frame,
-      image=self.icon_delete,
-      command=self._on_pressed_delete,
-      state=delete_button_state
-    )
-    delete_button.grid(column=3, row=0)
+      #add button
+
+      if self.add_func and not self.readonly:
+        add_button_state = tkinter.NORMAL
+      else:
+        add_button_state = tkinter.DISABLED
+      add_button = tkinter.ttk.Button(
+        nav_frame,
+        image=self.icon_add,
+        command=self._on_pressed_add,
+        state=add_button_state
+      )
+      add_button.grid(column=1, row=0)
+
+      #rename button
+
+      if not self.readonly:
+        rename_button_state = tkinter.NORMAL
+      else:
+        rename_button_state = tkinter.DISABLED
+      rename_button = tkinter.ttk.Button(
+        nav_frame,
+        image=self.icon_edit,
+        command=self._on_pressed_rename,
+        state=rename_button_state
+      )
+      rename_button.grid(column=2, row=0)
+
+      #delete button
+    
+      if not self.readonly:
+        delete_button_state = tkinter.NORMAL    
+      else:
+        delete_button_state = tkinter.DISABLED
+      delete_button = tkinter.ttk.Button(
+        nav_frame,
+        image=self.icon_delete,
+        command=self._on_pressed_delete,
+        state=delete_button_state
+      )
+      delete_button.grid(column=3, row=0)
 
     #listbox
 
     scrollable_listbox = Scrollable(
-      inner_frame, 
+      nav_frame, 
       lambda master: tkinter.Listbox(master, listvariable=self.listbox_var)
     )
     scrollable_listbox.grid(
       column=0, 
-      columnspan=4, 
+      columnspan=4,
       row=1, 
-      sticky=tkinter.EW, 
+      sticky=tkinter.NSEW, 
       pady=(const_.PADDING, 0)
     )
     scrollable_listbox.widget.bind("<<ListboxSelect>>", self._on_listbox_select)
 
-    #...
+    #separator
 
     separator_v = tkinter.ttk.Separator(inner_frame, orient=tkinter.VERTICAL)
-    separator_v.grid(column=4, row=0, rowspan=2, sticky=tkinter.NS, padx=(const_.PADDING_L, 0))
+    separator_v.grid(
+      column=1, 
+      row=0, 
+      sticky=tkinter.NS, 
+      padx=(const_.PADDING_L, 0)
+    )
+
+    #content
+
     content_outer_frame = tkinter.ttk.Frame(inner_frame)
-    content_outer_frame.grid(column=5, row=0, rowspan=2, sticky=tkinter.NW, padx=(const_.PADDING_L, 0))
+    content_outer_frame.grid(
+      column=2, 
+      row=0, 
+      sticky=tkinter.NW, 
+      padx=(const_.PADDING_L, 0)
+    )
     content_frame = self._build_content_frame(content_outer_frame)
     content_frame.pack(fill=tkinter.X)
     self.content_outer_frame = content_outer_frame

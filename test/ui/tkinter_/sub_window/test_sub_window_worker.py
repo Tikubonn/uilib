@@ -11,34 +11,39 @@ from uilib.ui.tkinter_.sub_window import SubWindow_Worker, WorkerStatus
     "should_raise_error",
     "expect_worker_status",
     "expect_widget_status",
+    "expect_exception",
   ],
   [
     pytest.param(
       False,
       False,
       WorkerStatus.SUCCEED,
-      WorkerStatus.SUCCEED
+      WorkerStatus.SUCCEED,
+      None
     ),
     pytest.param(
       True,
       False,
       WorkerStatus.FAILED,
-      WorkerStatus.FAILED
+      WorkerStatus.FAILED,
+      None
     ),
     pytest.param(
       False,
       True,
       WorkerStatus.FAILED,
-      WorkerStatus.FAILED
+      WorkerStatus.FAILED,
+      Exception()
     )
   ]
 )
 def test_sub_window_worker (
   test_toplevel:"tkinter.Toplevel",
+  destroy_first:bool,
+  should_raise_error:bool,
   expect_worker_status:"uilib.ui.tkinter_.sub_window.WorkerStatus",
   expect_widget_status:"uilib.ui.tkinter_.sub_window.WorkerStatus",
-  destroy_first:bool,
-  should_raise_error:bool):
+  expect_exception:BaseException|None):
   
   #最低限の動作確認を行います。
 
@@ -52,7 +57,7 @@ def test_sub_window_worker (
     nonlocal count_down
     nonlocal should_raise_error
     if should_raise_error:
-      raise Exception()
+      raise expect_exception
     else:
       if 0 < count_down:
         count_down -= 1
@@ -61,9 +66,11 @@ def test_sub_window_worker (
       else:
         return True
 
-  def failed_func ():
+  def failed_func (exception:BaseException|None):
     nonlocal worker_status
+    nonlocal last_exception
     worker_status = WorkerStatus.FAILED
+    last_exception = exception
 
   def succeed_func ():
     nonlocal worker_status
@@ -72,15 +79,18 @@ def test_sub_window_worker (
   def widget_update_func ():
     pass
 
-  def widget_failed_func ():
+  def widget_failed_func (exception:BaseException|None):
     nonlocal widget_status
+    nonlocal last_exception
     widget_status = WorkerStatus.FAILED
+    last_exception = exception
 
   def widget_succeed_func ():
     nonlocal widget_status
     widget_status = WorkerStatus.SUCCEED
 
   worker_status = None
+  last_exception = None
   widget_status = None
   
   sub_window = SubWindow_Worker(
@@ -101,4 +111,5 @@ def test_sub_window_worker (
     sub_window.destroy()
 
   assert worker_status is expect_worker_status
+  assert last_exception is expect_exception
   assert widget_status is expect_widget_status

@@ -22,8 +22,8 @@ def update_func () -> bool:
     time.sleep(1)
     return not should_repeat_var.get()
 
-def failed_func ():
-  print("Failed!")
+def failed_func (exception:Exception|None):
+  print("Failed: {!r}".format(exception))
 
 def succeed_func ():
   print("Succeed!")
@@ -31,8 +31,8 @@ def succeed_func ():
 def widget_update_func ():
   print("Widget update!")
 
-def widget_failed_func ():
-  print("Widget failed!")
+def widget_failed_func (exception:Exception|None):
+  print("Widget failed: {!r}".format(exception))
 
 def widget_succeed_func ():
   print("Widget succeed!")

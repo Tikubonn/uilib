@@ -18,14 +18,14 @@ def update_func () -> "typing.Generator[float, None, None]":
       yield (i + 1) / TOTAL_COUNT
       time.sleep(1)
 
-def failed_func ():
-  print("Failed!")
+def failed_func (exception:Exception|None):
+  print("Failed: {!r}".format(exception))
 
 def succeed_func ():
   print("Succeed!")
 
-def widget_failed_func ():
-  print("Widget failed!")
+def widget_failed_func (exception:Exception|None):
+  print("Widget failed: {!r}".format(exception))
 
 def widget_succeed_func ():
   print("Widget succeed!")

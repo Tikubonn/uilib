@@ -59,7 +59,7 @@ class SubWindow_Worker (SubWindow):
           # self.__thread.join() #ワーカースレッドに対する待機処理は外部公開している .join メソッドが担当する
           try:
             if self.__widget_failed_func:
-              self.__widget_failed_func()
+              self.__widget_failed_func(self.__last_exception)
           finally:
             self.destroy()
       case WorkerStatus.SUCCEED:
@@ -88,8 +88,9 @@ class SubWindow_Worker (SubWindow):
                   pass
                 case _:
                   raise ValueError(self.__worker_status)
-          except:
+          except BaseException as exception:
             self.__worker_status = WorkerStatus.FAILED
+            self.__last_exception = exception
             traceback.print_exc()
         case WorkerStatus.PAUSED:
           pass
@@ -100,7 +101,7 @@ class SubWindow_Worker (SubWindow):
     match self.__worker_status:
       case WorkerStatus.FAILED:
         if self.__failed_func:
-          self.__failed_func()
+          self.__failed_func(self.__last_exception)
       case WorkerStatus.SUCCEED:
         if self.__succeed_func:
           self.__succeed_func()
@@ -154,10 +155,10 @@ class SubWindow_Worker (SubWindow):
     setup_func:"typing.Callable[[tkinter.Toplevel], None]",
     *,
     update_func:"typing.Callable[[], bool]",
-    failed_func:"typing.Callable[[], None]|None"=None,
+    failed_func:"typing.Callable[[BaseException|None], None]|None"=None,
     succeed_func:"typing.Callable[[], None]|None"=None,
     widget_update_func:"typing.Callable[[], None]|None"=None,
-    widget_failed_func:"typing.Callable[[], None]|None"=None,
+    widget_failed_func:"typing.Callable[[BaseException|None], None]|None"=None,
     widget_succeed_func:"typing.Callable[[], None]|None"=None,
     language:"dict[str, str]|None"=None,
     is_modal:bool=False,
@@ -221,6 +222,7 @@ class SubWindow_Worker (SubWindow):
     self.__execed_widget_result_func = False #widget_failed_func, widget_succeed_func のいずれかが実行されたかを記録する変数
     self.__after_id = ""
     self.__thread = None
+    self.__last_exception = None
     self.__after_loop()
     self.__thread_setup()
     self.bind("<Destroy>", self.__on_destroy)
