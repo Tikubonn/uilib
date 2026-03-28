@@ -41,9 +41,9 @@ class SubWindow_ThreadPoolWorkerProgression (SubWindow_WorkerProgression):
           case WorkerStatus.FAILED | WorkerStatus.SUCCEED:
             break
           case _:
-            raise ValueError(self._worker_status) #tmp.
+            raise ValueError("Given an unknown worker status: {!r}".format(self._worker_status))
     else:
-      raise ValueError(progressions) #tmp.
+      raise ValueError("function {!r} was not returned generator: {!r}".format(func, progressions))
 
   _POLL_INTERVAL:"typing.ClassVar[float]" = 0.001
 

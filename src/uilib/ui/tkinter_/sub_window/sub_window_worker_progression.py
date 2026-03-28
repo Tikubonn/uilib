@@ -82,10 +82,10 @@ class SubWindow_WorkerProgression (SubWindow_Worker):
           case WorkerStatus.FAILED | WorkerStatus.SUCCEED:
             break
           case _:
-            raise ValueError(self._worker_status)
+            raise ValueError("Given an unknown worker status: {!r}".format(self._worker_status))
       return True #Don't repeat again.
     else:
-      raise ValueError(progressions) #tmp.
+      raise ValueError("update function of {!r} was not returned generator: {!r}".format(self.__update_func, progressions))
 
   def __widget_update_func (self):
     progression_int = round(self.__cur_progression * self._MAX_PROGRESSION_VALUE)
@@ -98,7 +98,7 @@ class SubWindow_WorkerProgression (SubWindow_Worker):
     title:str,
     message:str,
     *,
-    update_func:"typing.Callable[[], typing.Generator[float, None, None]]|None",
+    update_func:"typing.Callable[[], typing.Generator[float, None, None]]",
     failed_func:"typing.Callable[[BaseException|None], None]|None"=None,
     succeed_func:"typing.Callable[[], None]|None"=None,
     widget_failed_func:"typing.Callable[[BaseException|None], None]|None"=None,

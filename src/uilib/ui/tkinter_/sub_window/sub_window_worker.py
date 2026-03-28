@@ -72,7 +72,7 @@ class SubWindow_Worker (SubWindow):
           finally:
             self.destroy()
       case _:
-        raise ValueError(self.__worker_status) #tmp.
+        raise ValueError("Given an unknown worker status: {!r}".format(self.__worker_status))
 
   def __thread_main (self):
     while True:
@@ -87,7 +87,7 @@ class SubWindow_Worker (SubWindow):
                 case WorkerStatus.FAILED | WorkerStatus.SUCCEED:
                   pass
                 case _:
-                  raise ValueError(self.__worker_status)
+                  raise ValueError("Given an unknown worker status: {!r}".format(self.__worker_status))
           except BaseException as exception:
             self.__worker_status = WorkerStatus.FAILED
             self.__last_exception = exception
@@ -97,7 +97,7 @@ class SubWindow_Worker (SubWindow):
         case WorkerStatus.FAILED | WorkerStatus.SUCCEED:
           break
         case _:
-          raise ValueError(self.__worker_status) #tmp.
+          raise ValueError("Given an unknown worker status: {!r}".format(self.__worker_status))
     match self.__worker_status:
       case WorkerStatus.FAILED:
         if self.__failed_func:
@@ -106,7 +106,7 @@ class SubWindow_Worker (SubWindow):
         if self.__succeed_func:
           self.__succeed_func()
       case _:
-        raise ValueError(self.__worker_status) #tmp.
+        raise ValueError("Given an unknown worker status: {!r}".format(self.__worker_status))
 
   def __thread_setup (self):
     self.__thread = Thread(target=self.__thread_main)
@@ -122,7 +122,7 @@ class SubWindow_Worker (SubWindow):
       case WorkerStatus.FAILED | WorkerStatus.SUCCEED: #既に状態が決まっているならば何も行わない
         pass
       case _:
-        raise ValueError(self.__worker_status)
+        raise ValueError("Given an unknown worker status: {!r}".format(self.__worker_status))
     self.__after_loop() #self.__worker_status の値は WorkerStatus.FAILED, WorkerStatus.SUCCEED のいずれかなので1度しか実行されない前提として扱う。
 
   def __on_wm_delete_window (self):
@@ -147,7 +147,7 @@ class SubWindow_Worker (SubWindow):
             case WorkerStatus.PENDING | WorkerStatus.FAILED | WorkerStatus.SUCCEED:
               pass
             case _:
-              raise ValueError(self.__worker_status) #tmp.
+              raise ValueError("Given an unknown worker status: {!r}".format(self.__worker_status))
 
   def __init__ (
     self,
