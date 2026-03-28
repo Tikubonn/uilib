@@ -327,7 +327,7 @@ class UI_Dict (IUI):
       self._rebuild()
       self._on_changed()
     else:
-      raise ValueError(param) #tmp.
+      raise ValueError("Given an invalid param: {!r}".format(param))
 
   def save_as_param (self) -> "dict[str, typing.Any]":
     return {

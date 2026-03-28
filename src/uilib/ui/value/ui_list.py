@@ -111,7 +111,7 @@ class UI_List (IUI):
       self._rebuild()
       self._on_changed()
     else:
-      raise IndexError(index)
+      raise IndexError("Index is out of moveable range for {!r}: {:d}".format(self.uis, index))
 
   def _can_move_down (self, index:int) -> bool:
 
@@ -143,7 +143,7 @@ class UI_List (IUI):
       self._rebuild()
       self._on_changed()
     else:
-      raise IndexError(index)
+      raise IndexError("Index is out of moveable range for {!r}: {:d}".format(self.uis, index))
 
   def delete (self, index:int):
     if 0 <= index and index < len(self.uis):
@@ -151,7 +151,7 @@ class UI_List (IUI):
       self._rebuild()
       self._on_changed()
     else:
-      raise IndexError(index)
+      raise IndexError("Index is out of range for {!r}: {:d}".format(self.uis, index))
 
   def get_value (self) -> "list[typing.Any]":
     return [ui.get_value() for ui in self.uis]
@@ -283,7 +283,7 @@ class UI_List (IUI):
       self._rebuild()
       self._on_changed()
     else:
-      raise ValueError(param) #tmp.
-  
+      raise ValueError("Given an invalid param: {!r}".format(param))
+
   def save_as_param (self) -> "list[typing.Any]":
     return [ui.save_as_param() for ui in self.uis]

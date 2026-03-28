@@ -114,7 +114,7 @@ class UI_Int (IUI):
     if isinstance(param, int):
       self.ui_number.load_from_param(param)
     else:
-      raise ValueError(param) #tmp.
+      raise ValueError("Given an invalid param: {!r}".format(param))
 
   def save_as_param (self) -> int:
     return self.ui_number.save_as_param()
@@ -150,7 +150,7 @@ class UI_Float (IUI):
     if isinstance(param, float):
       self.ui_number.load_from_param(param)
     else:
-      raise ValueError(param) #tmp.
+      raise ValueError("Given an invalid param: {!r}".format(param))
 
   def save_as_param (self) -> float:
     return self.ui_number.save_as_param()

@@ -42,7 +42,7 @@ class UI_HardDict (IUI):
       for key, inner_param in param.items():
         self.uis[key].load_from_param(inner_param)
     else:
-      raise ValueError(param) #tmp.
+      raise ValueError("Given an invalid param: {!r}".format(param))
 
   def save_as_param (self) -> "dict[str, typing.Any]":
     return {

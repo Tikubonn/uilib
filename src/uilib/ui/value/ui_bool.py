@@ -51,7 +51,7 @@ class UI_Bool (IUI):
         _LOGGER.debug("Ignored loading param because instance is readonly: {!r} <- {!r}".format(self, param)) #log.
 
     else:
-      raise ValueError(param) #tmp.
-  
+      raise ValueError("Given an invalid param: {!r}".format(param))
+
   def save_as_param (self) -> bool:
     return bool(self.var.get())
