@@ -22,7 +22,12 @@ class UI_Text (IUI):
   def build (self, master:"tkinter.Widget") -> "tkinter.Widget":
     base_frame = tkinter.ttk.Frame(master)
     base_frame.bind("<Configure>", self._on_resize)
-    message = tkinter.Message(base_frame, text=self.text) #tmp.
+    message = tkinter.Message(
+      base_frame, 
+      text=self.text, 
+      bd=0, #広範囲の余白を削除する
+      pady=0, #縦方向の小範囲の余白を削除する
+    )
     message.pack(anchor=tkinter.W)
     self.base_frame = base_frame
     self.message = message
