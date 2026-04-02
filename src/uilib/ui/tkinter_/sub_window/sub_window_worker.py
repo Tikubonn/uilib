@@ -58,19 +58,27 @@ class SubWindow_Worker (SubWindow):
           self.__execed_widget_result_func = True
           # self.__thread.join() #ワーカースレッドに対する待機処理は外部公開している .join メソッドが担当する
           try:
-            if self.__widget_failed_func:
-              self.__widget_failed_func(self.__last_exception)
+            if self.__widget_update_func:
+              self.__widget_update_func()
           finally:
-            self.destroy()
+            try:
+              if self.__widget_failed_func:
+                self.__widget_failed_func(self.__last_exception)
+            finally:
+              self.destroy()
       case WorkerStatus.SUCCEED:
         if not self.__execed_widget_result_func:
           self.__execed_widget_result_func = True
           # self.__thread.join() #ワーカースレッドに対する待機処理は外部公開している .join メソッドが担当する
           try:
-            if self.__widget_succeed_func:
-              self.__widget_succeed_func()
+            if self.__widget_update_func:
+              self.__widget_update_func()
           finally:
-            self.destroy()
+            try:
+              if self.__widget_succeed_func:
+                self.__widget_succeed_func()
+            finally:
+              self.destroy()
       case _:
         raise ValueError("Given an unknown worker status: {!r}".format(self.__worker_status))
 
@@ -166,6 +174,11 @@ class SubWindow_Worker (SubWindow):
     ask_on_closing:bool=True):
 
     """インスタンスの初期化を行います。
+
+    Warnings
+    --------
+    widget_update_func 関数の実行周期は常に一定ではありません。
+    widget_update_func 関数は widget_succeed_func, widget_failed_func 関数の実行直前に実行されます。
 
     Parameters
     ----------
