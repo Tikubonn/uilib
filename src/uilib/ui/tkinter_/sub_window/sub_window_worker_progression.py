@@ -27,9 +27,18 @@ class SubWindow_WorkerProgression (SubWindow_Worker):
 
   _MAX_PROGRESSION_VALUE:"typing.ClassVar[int]" = 1000
 
-  def __update_progression_text (self):
-    progression_int = self.__progression_var.get()
-    self.__progression_label_var.set("{:>5.1f}%".format(progression_int / self._MAX_PROGRESSION_VALUE * 100.0))
+  def __update_widget_progression (self):
+
+    """ウィジット内の進捗度に関する各部品を更新します。
+
+    Warnings
+    --------
+    本メソッドは tkinter の制約により tkinter.Tk と同一スレッドでなければ安全に実行することができません。
+    """
+
+    progression_int = round(self.__cur_progression * self._MAX_PROGRESSION_VALUE)
+    self.__progression_var.set(progression_int)
+    self.__progression_label_var.set("{:>5.1f}%".format(self.__cur_progression * 100.0))
 
   def __setup_func (self, master:"tkinter.Toplevel"):
     master.title(self.__title)
@@ -41,7 +50,7 @@ class SubWindow_WorkerProgression (SubWindow_Worker):
     progression_label.grid(column=0, row=1, sticky=tkinter.E, pady=(const_.PADDING_L, 0))
     progression_bar = tkinter.ttk.Progressbar(base_frame, orient=tkinter.HORIZONTAL, variable=self.__progression_var, maximum=self._MAX_PROGRESSION_VALUE)
     progression_bar.grid(column=1, row=1, sticky=tkinter.EW, pady=(const_.PADDING_L, 0), padx=(const_.PADDING, 0))
-    self.__update_progression_text()
+    self.__update_widget_progression()
 
   def _set_progression (self, progression:float):
 
@@ -51,6 +60,11 @@ class SubWindow_WorkerProgression (SubWindow_Worker):
     -----
     progression の値が現在進行度よりも小さいもしくは 1.0 よりも大きい場合、
     その値は 0.0 ~ 1.0 までの範囲に収められます。
+
+    Warnings
+    --------
+    本メソッドは tkinter の制約を回避するために、実際の画面描画は行わず、内部変数 __cur_progression のみを変更します。
+    そのため、変更された進捗度が画面に反映されるまで多少のタイムラグが発生します。
 
     メソッドは秘匿関数として定義されています。
     そのためサブクラス以外からのアクセスは非推奨です。
@@ -88,9 +102,13 @@ class SubWindow_WorkerProgression (SubWindow_Worker):
       raise ValueError("update function of {!r} was not returned generator: {!r}".format(self.__update_func, progressions))
 
   def __widget_update_func (self):
-    progression_int = round(self.__cur_progression * self._MAX_PROGRESSION_VALUE)
-    self.__progression_var.set(progression_int)
-    self.__update_progression_text()
+    self.__update_widget_progression()
+
+  def __wrapped_widget_succeed_func (self):
+    self._set_progression(1.0)
+    self.__update_widget_progression()
+    if self.__widget_succeed_func:
+      self.__widget_succeed_func()
 
   def __init__ (
     self,
@@ -153,6 +171,7 @@ class SubWindow_WorkerProgression (SubWindow_Worker):
     self.__title = title
     self.__message = message
     self.__update_func = update_func
+    self.__widget_succeed_func = widget_succeed_func
     self.__progression_var = tkinter.IntVar(value=0)
     self.__progression_label_var = tkinter.StringVar(value="")
     self.__cur_progression = 0.0
@@ -164,7 +183,7 @@ class SubWindow_WorkerProgression (SubWindow_Worker):
       succeed_func=succeed_func,
       widget_update_func=self.__widget_update_func,
       widget_failed_func=widget_failed_func,
-      widget_succeed_func=widget_succeed_func,
+      widget_succeed_func=self.__wrapped_widget_succeed_func,
       language=language,
       is_modal=is_modal,
       pause_on_asking=pause_on_asking,

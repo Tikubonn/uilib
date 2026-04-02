@@ -34,7 +34,7 @@ class UI_Text (IUI):
     self._on_resize()
     return base_frame
 
-  def load_from_param (self, params:None):
+  def load_from_param (self, param:None):
     if param is None:
       pass
     else:
